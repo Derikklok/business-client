@@ -4,9 +4,11 @@ import { Plus, Search } from "lucide-react";
 import { Input } from "@/components/ui/input";
 import { useState } from "react";
 import CustomerDataTable from "@/components/customers/Customer-data-table";
+import CreateCustomerModel from "@/components/customers/Create-customer-model";
 
 const Customertab = () => {
   const [searchQuery, setSearchQuery] = useState("");
+  const [createModalOpen, setCreateModalOpen] = useState(false);
 
   return (
     <div className="space-y-6">
@@ -16,7 +18,10 @@ const Customertab = () => {
           <h2 className="text-xl font-semibold">Customers</h2>
           <p className="text-sm text-muted-foreground">Manage and organize your customer information</p>
         </div>
-        <Button className="gap-2 w-full sm:w-auto">
+        <Button 
+          className="gap-2 w-full sm:w-auto"
+          onClick={() => setCreateModalOpen(true)}
+        >
           <Plus className="w-4 h-4" />
           Add Customer
         </Button>
@@ -37,6 +42,12 @@ const Customertab = () => {
 
       {/* Customer Data Table */}
       <CustomerDataTable />
+
+      {/* Create Customer Sheet */}
+      <CreateCustomerModel
+        open={createModalOpen}
+        onOpenChange={setCreateModalOpen}
+      />
     </div>
   )
 }

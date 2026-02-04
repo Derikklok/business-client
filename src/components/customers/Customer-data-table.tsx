@@ -13,10 +13,17 @@ import { Card, CardContent } from "@/components/ui/card";
 import { useCustomers } from "@/hooks/useCustomers";
 import { Loader2, Edit2, Trash2, Eye } from "lucide-react";
 import type { Customer } from "@/types/customer.types";
+import CustomerDetailsModel from "./Customer-details-model";
 
 const CustomerDataTable = () => {
   const { data: customers = [], isLoading, error } = useCustomers();
   const [selectedCustomer, setSelectedCustomer] = useState<Customer | null>(null);
+  const [dialogOpen, setDialogOpen] = useState(false);
+
+  const handleViewCustomer = (customer: Customer) => {
+    setSelectedCustomer(customer);
+    setDialogOpen(true);
+  };
 
   if (isLoading) {
     return (
@@ -88,7 +95,7 @@ const CustomerDataTable = () => {
                       <Button
                         variant="ghost"
                         size="sm"
-                        onClick={() => setSelectedCustomer(customer)}
+                        onClick={() => handleViewCustomer(customer)}
                         className="gap-2"
                       >
                         <Eye className="w-4 h-4" />
@@ -115,48 +122,12 @@ const CustomerDataTable = () => {
         </CardContent>
       </Card>
 
-      {/* Detail View Modal Placeholder */}
-      {selectedCustomer && (
-        <Card>
-          <CardContent className="pt-6">
-            <div className="flex justify-between items-start mb-4">
-              <div>
-                <h3 className="font-semibold text-lg">{selectedCustomer.companyName}</h3>
-                <p className="text-sm text-muted-foreground">Registration: {selectedCustomer.registrationNumber}</p>
-              </div>
-              <Button
-                variant="outline"
-                size="sm"
-                onClick={() => setSelectedCustomer(null)}
-              >
-                Close
-              </Button>
-            </div>
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-              <div>
-                <p className="text-sm text-muted-foreground">Contact Person</p>
-                <p className="font-medium">{selectedCustomer.contactPerson}</p>
-              </div>
-              <div>
-                <p className="text-sm text-muted-foreground">Email</p>
-                <p className="font-medium">{selectedCustomer.email}</p>
-              </div>
-              <div>
-                <p className="text-sm text-muted-foreground">Phone</p>
-                <p className="font-medium">{selectedCustomer.phone}</p>
-              </div>
-              <div>
-                <p className="text-sm text-muted-foreground">Address</p>
-                <p className="font-medium">{selectedCustomer.address}</p>
-              </div>
-              <div className="md:col-span-2">
-                <p className="text-sm text-muted-foreground">Description</p>
-                <p className="font-medium">{selectedCustomer.description}</p>
-              </div>
-            </div>
-          </CardContent>
-        </Card>
-      )}
+      {/* Customer Details Dialog */}
+      <CustomerDetailsModel
+        customer={selectedCustomer}
+        open={dialogOpen}
+        onOpenChange={setDialogOpen}
+      />
     </div>
   );
 };
