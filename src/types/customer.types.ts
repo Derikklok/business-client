@@ -10,3 +10,12 @@ export interface Customer {
   createdAt: string;
   updatedAt: string;
 }
+
+export interface CreateCustomerRequest {
+  companyName: string;
+  address: string;
+  contactPerson: string;
+  phone: number;
+  email: string;
+  description: string;
+}

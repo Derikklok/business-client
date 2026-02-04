@@ -6,6 +6,7 @@ import { Label } from "@/components/ui/label";
 import { useState, type FormEvent } from "react";
 import { toast } from "sonner";
 import { Loader2, Building2, User, Mail, Phone, MapPin, FileText } from "lucide-react";
+import { useCreateCustomer } from "@/hooks/useCustomers";
 
 interface CreateCustomerModelProps {
   open: boolean;
@@ -21,7 +22,8 @@ const CreateCustomerModel = ({ open, onOpenChange }: CreateCustomerModelProps) =
     address: "",
     description: "",
   });
-  const [isLoading, setIsLoading] = useState(false);
+  const createCustomer = useCreateCustomer();
+  const isLoading = createCustomer.isPending;
 
   const handleInputChange = (
     e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
@@ -61,11 +63,17 @@ const CreateCustomerModel = ({ open, onOpenChange }: CreateCustomerModelProps) =
       return;
     }
 
-    setIsLoading(true);
     try {
-      // TODO: Call API to create customer
-      // const response = await customerService.create(formData);
-      
+      // Convert phone to number and call API
+      await createCustomer.mutateAsync({
+        companyName: formData.companyName,
+        contactPerson: formData.contactPerson,
+        email: formData.email,
+        phone: parseInt(formData.phone.replace(/\D/g, ""), 10),
+        address: formData.address,
+        description: formData.description,
+      });
+
       toast.success("Customer created successfully!");
       onOpenChange(false);
       setFormData({
@@ -79,22 +87,20 @@ const CreateCustomerModel = ({ open, onOpenChange }: CreateCustomerModelProps) =
     } catch (error) {
       toast.error("Failed to create customer");
       console.error(error);
-    } finally {
-      setIsLoading(false);
     }
   };
 
   return (
     <Sheet open={open} onOpenChange={onOpenChange}>
-      <SheetContent side="right" className="w-full sm:w-135 overflow-y-auto">
-        <SheetHeader>
-          <SheetTitle className="text-2xl">Add New Customer</SheetTitle>
-          <SheetDescription>
+      <SheetContent side="right" className="w-full sm:w-135 overflow-y-auto flex flex-col">
+        <SheetHeader className="pb-8">
+          <SheetTitle className="text-2xl font-bold">Add New Customer</SheetTitle>
+          <SheetDescription className="text-sm mt-2">
             Fill in the details below to create a new customer record
           </SheetDescription>
         </SheetHeader>
 
-        <form onSubmit={handleSubmit} className="space-y-6 py-6 px-2">
+        <form onSubmit={handleSubmit} className="space-y-8 py-2 px-2 flex-1">
           {/* Company Name - Full Width */}
           <div className="space-y-2">
             <Label htmlFor="companyName" className="font-semibold flex items-center gap-2">
@@ -112,7 +118,7 @@ const CreateCustomerModel = ({ open, onOpenChange }: CreateCustomerModelProps) =
           </div>
 
           {/* Contact Person & Email - Grid */}
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
             <div className="space-y-2">
               <Label htmlFor="contactPerson" className="font-semibold flex items-center gap-2">
                 <User className="w-4 h-4 text-primary" />
@@ -146,7 +152,7 @@ const CreateCustomerModel = ({ open, onOpenChange }: CreateCustomerModelProps) =
           </div>
 
           {/* Phone & Address - Grid */}
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
             <div className="space-y-2">
               <Label htmlFor="phone" className="font-semibold flex items-center gap-2">
                 <Phone className="w-4 h-4 text-primary" />
@@ -196,7 +202,7 @@ const CreateCustomerModel = ({ open, onOpenChange }: CreateCustomerModelProps) =
           </div>
 
           {/* Action Buttons */}
-          <div className="flex gap-3 justify-end pt-6 border-t border-border">
+          <div className="flex gap-3 justify-end pt-8 mt-4 border-t border-border">
             <Button
               type="button"
               variant="outline"
