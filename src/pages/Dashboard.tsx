@@ -4,7 +4,7 @@ import { useNavigate } from "react-router-dom";
 import { useEffect, useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { LogOut, Users, FileText } from "lucide-react";
+import { LogOut, Users, FileText, Building2 } from "lucide-react";
 import Customertab from "@/components/dashboard/Customer-tab";
 import Documentstab from "@/components/dashboard/Docs-tab";
 
@@ -31,14 +31,24 @@ export default function Dashboard() {
   return (
     <div className="min-h-screen bg-background">
       {/* Header */}
-      <div className="border-b border-border bg-card/50 backdrop-blur-sm sticky top-0 z-50">
-        <div className="max-w-7xl mx-auto px-6 py-4">
+      <div className="bg-linear-to-r from-primary to-primary/90 text-primary-foreground border-b border-primary/30 backdrop-blur-md sticky top-0 z-50 shadow-lg">
+        <div className="max-w-7xl mx-auto px-6 py-6">
           <div className="flex items-center justify-between">
-            <div>
-              <h1 className="text-2xl font-bold text-foreground">Management Centre</h1>
-              <p className="text-sm text-muted-foreground mt-1">Welcome back, {user.name}</p>
+            <div className="flex items-center gap-3">
+              <div className="bg-white/20 backdrop-blur-sm p-2.5 rounded-lg border border-white/30">
+                <Building2 className="w-6 h-6 text-white" />
+              </div>
+              <div>
+                <h1 className="text-3xl font-bold text-white">Management Centre</h1>
+                <p className="text-sm text-white/70 mt-1">Welcome back, {user.name}</p>
+              </div>
             </div>
-            <Button onClick={handleLogout} variant="outline" size="sm" className="gap-2">
+            <Button 
+              onClick={handleLogout} 
+              variant="outline" 
+              size="sm" 
+              className="gap-2 bg-white/10 border-white/30 text-white hover:bg-white/20 transition-colors"
+            >
               <LogOut className="w-4 h-4" />
               Logout
             </Button>
