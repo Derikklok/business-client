@@ -92,15 +92,15 @@ const CreateCustomerModel = ({ open, onOpenChange }: CreateCustomerModelProps) =
 
   return (
     <Sheet open={open} onOpenChange={onOpenChange}>
-      <SheetContent side="right" className="w-full sm:w-135 overflow-y-auto flex flex-col">
-        <SheetHeader className="pb-8">
-          <SheetTitle className="text-2xl font-bold">Add New Customer</SheetTitle>
-          <SheetDescription className="text-sm mt-2">
+      <SheetContent side="right" className="w-full sm:w-135 overflow-y-auto flex flex-col p-0">
+        <SheetHeader className="bg-linear-to-br from-primary to-primary/70 text-primary-foreground pb-8 pt-8 px-6 rounded-b-lg">
+          <SheetTitle className="text-2xl font-bold text-primary-foreground">Add New Customer</SheetTitle>
+          <SheetDescription className="text-sm mt-2 text-primary-foreground/80">
             Fill in the details below to create a new customer record
           </SheetDescription>
         </SheetHeader>
 
-        <form onSubmit={handleSubmit} className="space-y-8 py-2 px-2 flex-1">
+        <form onSubmit={handleSubmit} className="space-y-8 py-2 px-6 flex-1">
           {/* Company Name - Full Width */}
           <div className="space-y-2">
             <Label htmlFor="companyName" className="font-semibold flex items-center gap-2">
