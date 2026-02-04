@@ -22,7 +22,7 @@ const Login = () => {
             <GalleryVerticalEnd className="size-5" />
           </div>
           <h1 className="text-xl font-semibold tracking-tight text-foreground">
-            Acme Inc.
+            Forklift and Machinery Maintenance Centre
           </h1>
         </div>
         <Loginform />

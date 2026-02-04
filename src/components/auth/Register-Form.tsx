@@ -71,7 +71,7 @@ const Registerform = () => {
             </svg>
           </div>
           <h1 className="text-xl font-semibold tracking-tight text-foreground">
-            Acme Inc.
+            Forklift and Machinery Maintenance Centre Inc.
           </h1>
         </div>
         
