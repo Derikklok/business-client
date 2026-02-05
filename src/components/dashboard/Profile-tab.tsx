@@ -5,13 +5,14 @@ import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Label } from "@/components/ui/label";
 import { Card, CardContent } from "@/components/ui/card";
-import { useProfile, useUpdateProfile, useUploadLogo } from "@/hooks/useProfile";
+import { useProfile, useUpdateProfile, useCreateProfile, useUploadLogo } from "@/hooks/useProfile";
 import { Building2, Upload, X, Loader2, Phone, Plus, Mail, Edit3, MapPin, Hash, Camera } from "lucide-react";
 import { toast } from "sonner";
 
 const ProfileTab = () => {
   const { data: profile, isLoading, error } = useProfile();
   const updateProfile = useUpdateProfile();
+  const createProfile = useCreateProfile();
   const uploadLogo = useUploadLogo();
   const fileInputRef = useRef<HTMLInputElement>(null);
   const [isEditing, setIsEditing] = useState(false);
@@ -28,6 +29,7 @@ const ProfileTab = () => {
 
   const handleEditClick = () => {
     if (profile) {
+      // Edit existing profile
       setFormData({
         businessName: profile.businessName || "",
         registrationNumber: profile.registrationNumber || "",
@@ -37,6 +39,17 @@ const ProfileTab = () => {
         logo: profile.logo || "",
       });
       setLogoPreview(profile.logo || null);
+    } else {
+      // Create new profile with default values
+      setFormData({
+        businessName: "",
+        registrationNumber: "",
+        address: "",
+        contactNumbers: [""],
+        emailAddresses: [""],
+        logo: "",
+      });
+      setLogoPreview(null);
     }
     setIsEditing(true);
   };
@@ -163,22 +176,42 @@ const ProfileTab = () => {
     }
 
     try {
-      await updateProfile.mutateAsync({
-        businessName: formData.businessName,
-        registrationNumber: formData.registrationNumber,
-        address: formData.address,
-        contactNumbers: formData.contactNumbers,
-        emailAddresses: formData.emailAddresses,
-        ...(formData.logo && { logo: formData.logo }),
-      });
-
-      toast.success("Business profile updated successfully!");
+      if (profile) {
+        // Update existing profile
+        await updateProfile.mutateAsync({
+          businessName: formData.businessName,
+          registrationNumber: formData.registrationNumber,
+          address: formData.address,
+          contactNumbers: formData.contactNumbers,
+          emailAddresses: formData.emailAddresses,
+          ...(formData.logo && { logo: formData.logo }),
+        });
+        toast.success("Business profile updated successfully!");
+      } else {
+        // Create new profile
+        await createProfile.mutateAsync({
+          businessName: formData.businessName,
+          registrationNumber: formData.registrationNumber,
+          address: formData.address,
+          contactNumbers: formData.contactNumbers,
+          emailAddresses: formData.emailAddresses,
+          ...(formData.logo && { logo: formData.logo }),
+        });
+        toast.success("Business profile created successfully!");
+      }
       setIsEditing(false);
     } catch (error) {
-      toast.error("Failed to update business profile");
+      toast.error(profile ? "Failed to update business profile" : "Failed to create business profile");
       console.error(error);
     }
   };
+
+  // Check if error is 404 (no profile found) to show create profile state
+  const isNoProfile = error && (
+    error.message.includes('404') || 
+    error.message.includes('Request failed with status code 404') ||
+    error.message.includes('No profile found')
+  );
 
   if (isLoading) {
     return (
@@ -190,6 +223,49 @@ const ProfileTab = () => {
           </div>
         </CardContent>
       </Card>
+    );
+  }
+
+  if (isNoProfile) {
+    return (
+      <div className="space-y-8">
+        {/* Header */}
+        <div className="flex items-center justify-between p-6 bg-linear-to-r from-primary/5 to-transparent rounded-lg border border-primary/10">
+          <div className="space-y-2">
+            <div className="flex items-center gap-3">
+              <div className="p-2 bg-primary/10 rounded-lg">
+                <Building2 className="w-5 h-5 text-primary" />
+              </div>
+              <div>
+                <h2 className="text-2xl font-bold text-foreground">
+                  Business Profile
+                </h2>
+                <p className="text-sm text-muted-foreground">Set up your business information and branding</p>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        {/* No Profile Yet State */}
+        <Card className="border-dashed">
+          <CardContent className="flex flex-col items-center justify-center py-16">
+            <div className="w-16 h-16 rounded-lg bg-primary/10 flex items-center justify-center mb-6">
+              <Building2 className="w-8 h-8 text-primary" />
+            </div>
+            <h3 className="font-semibold text-xl mb-3">No business profile yet</h3>
+            <p className="text-muted-foreground text-center mb-8 max-w-md">
+              Create your business profile to manage your company information, contact details, and branding
+            </p>
+            <Button 
+              onClick={handleEditClick}
+              className="gap-2 px-6 py-3"
+            >
+              <Plus className="w-4 h-4" />
+              Create Business Profile
+            </Button>
+          </CardContent>
+        </Card>
+      </div>
     );
   }
 
