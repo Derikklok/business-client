@@ -6,7 +6,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { Label } from "@/components/ui/label";
 import { Card, CardContent } from "@/components/ui/card";
 import { useProfile, useUpdateProfile, useUploadLogo } from "@/hooks/useProfile";
-import { Building2, Upload, X, Loader2, Phone, Plus } from "lucide-react";
+import { Building2, Upload, X, Loader2, Phone, Plus, Mail } from "lucide-react";
 import { toast } from "sonner";
 
 const ProfileTab = () => {
@@ -22,6 +22,7 @@ const ProfileTab = () => {
     registrationNumber: profile?.registrationNumber || "",
     address: profile?.address || "",
     contactNumbers: profile?.contactNumbers || [""],
+    emailAddresses: profile?.emailAddresses || [""],
   });
 
   const handleInputChange = (
@@ -54,6 +55,29 @@ const ProfileTab = () => {
     setFormData((prev) => ({
       ...prev,
       contactNumbers: prev.contactNumbers.filter((_, i) => i !== index),
+    }));
+  };
+
+  const handleEmailChange = (index: number, value: string) => {
+    const newEmails = [...formData.emailAddresses];
+    newEmails[index] = value;
+    setFormData((prev) => ({
+      ...prev,
+      emailAddresses: newEmails,
+    }));
+  };
+
+  const handleAddEmail = () => {
+    setFormData((prev) => ({
+      ...prev,
+      emailAddresses: [...prev.emailAddresses, ""],
+    }));
+  };
+
+  const handleRemoveEmail = (index: number) => {
+    setFormData((prev) => ({
+      ...prev,
+      emailAddresses: prev.emailAddresses.filter((_, i) => i !== index),
     }));
   };
 
@@ -98,7 +122,8 @@ const ProfileTab = () => {
       !formData.businessName ||
       !formData.registrationNumber ||
       !formData.address ||
-      formData.contactNumbers.some((num) => !num)
+      formData.contactNumbers.some((num) => !num) ||
+      formData.emailAddresses.some((email) => !email)
     ) {
       toast.error("Please fill in all required fields");
       return;
@@ -111,12 +136,20 @@ const ProfileTab = () => {
       return;
     }
 
+    // Email validation
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (!formData.emailAddresses.every((email) => emailRegex.test(email))) {
+      toast.error("Please enter valid email addresses");
+      return;
+    }
+
     try {
       await updateProfile.mutateAsync({
         businessName: formData.businessName,
         registrationNumber: formData.registrationNumber,
         address: formData.address,
         contactNumbers: formData.contactNumbers,
+        emailAddresses: formData.emailAddresses,
       });
 
       toast.success("Business profile updated successfully!");
@@ -340,6 +373,55 @@ const ProfileTab = () => {
                 </div>
               </div>
 
+              {/* Divider */}
+              <div className="h-px bg-border" />
+
+              {/* Email Addresses */}
+              <div className="space-y-4">
+                <div className="flex items-center justify-between">
+                  <h3 className="text-sm font-semibold text-foreground/80 uppercase tracking-wide flex items-center gap-2">
+                    <Mail className="w-4 h-4" />
+                    Email Addresses
+                  </h3>
+                  <Button
+                    type="button"
+                    variant="outline"
+                    size="sm"
+                    onClick={handleAddEmail}
+                    className="gap-2"
+                  >
+                    <Plus className="w-4 h-4" />
+                    Add Email
+                  </Button>
+                </div>
+
+                <div className="space-y-3">
+                  {formData.emailAddresses.map((email, index) => (
+                    <div key={index} className="flex gap-2">
+                      <div className="flex-1">
+                        <Input
+                          type="email"
+                          value={email}
+                          onChange={(e) => handleEmailChange(index, e.target.value)}
+                          placeholder="Enter email address"
+                        />
+                      </div>
+                      {formData.emailAddresses.length > 1 && (
+                        <Button
+                          type="button"
+                          variant="ghost"
+                          size="icon"
+                          onClick={() => handleRemoveEmail(index)}
+                          className="text-destructive hover:text-destructive hover:bg-destructive/10"
+                        >
+                          <X className="w-4 h-4" />
+                        </Button>
+                      )}
+                    </div>
+                  ))}
+                </div>
+              </div>
+
               {/* Action Buttons */}
               <div className="flex gap-3 justify-end pt-4 border-t border-border">
                 <Button
@@ -426,6 +508,30 @@ const ProfileTab = () => {
                   ))
                 ) : (
                   <p className="text-muted-foreground">No contact numbers added</p>
+                )}
+              </div>
+            </CardContent>
+          </Card>
+
+          {/* Email Addresses */}
+          <Card>
+            <CardContent className="p-6">
+              <h3 className="text-sm font-semibold text-foreground/80 uppercase tracking-wide mb-4 flex items-center gap-2">
+                <Mail className="w-4 h-4 text-primary" />
+                Email Addresses
+              </h3>
+              <div className="space-y-2">
+                {profile?.emailAddresses && profile.emailAddresses.length > 0 ? (
+                  profile.emailAddresses.map((email, index) => (
+                    <div
+                      key={index}
+                      className="p-3 bg-muted/30 rounded-lg border border-border/50 hover:border-primary/30 transition-colors"
+                    >
+                      <p className="font-semibold text-foreground text-sm break-all">{email}</p>
+                    </div>
+                  ))
+                ) : (
+                  <p className="text-muted-foreground">No email addresses added</p>
                 )}
               </div>
             </CardContent>
