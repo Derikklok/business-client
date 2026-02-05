@@ -4,9 +4,10 @@ import { useNavigate } from "react-router-dom";
 import { useEffect, useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { LogOut, Users, FileText, Building2 } from "lucide-react";
+import { LogOut, Users, FileText, Building2, Settings } from "lucide-react";
 import Customertab from "@/components/dashboard/Customer-tab";
 import Documentstab from "@/components/dashboard/Docs-tab";
+import ProfileTab from "@/components/dashboard/Profile-tab";
 
 export default function Dashboard() {
   const user = useAuthUser();
@@ -60,7 +61,7 @@ export default function Dashboard() {
       <div className="max-w-7xl mx-auto px-6 py-8">
         <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
           {/* Tabs Navigation */}
-          <TabsList className="grid w-full max-w-md grid-cols-2 mb-6">
+          <TabsList className="grid w-full max-w-2xl grid-cols-3 mb-6">
             <TabsTrigger value="customers" className="gap-2">
               <Users className="w-4 h-4" />
               <span className="hidden sm:inline">Customers</span>
@@ -70,6 +71,11 @@ export default function Dashboard() {
               <FileText className="w-4 h-4" />
               <span className="hidden sm:inline">Documents</span>
               <span className="sm:hidden">Docs</span>
+            </TabsTrigger>
+            <TabsTrigger value="profile" className="gap-2">
+              <Settings className="w-4 h-4" />
+              <span className="hidden sm:inline">Profile</span>
+              <span className="sm:hidden">Profile</span>
             </TabsTrigger>
           </TabsList>
 
@@ -82,8 +88,14 @@ export default function Dashboard() {
           <TabsContent value="documents" className="space-y-4">
             <Documentstab />
           </TabsContent>
+
+          {/* Profile Tab */}
+          <TabsContent value="profile" className="space-y-4">
+            <ProfileTab />
+          </TabsContent>
         </Tabs>
       </div>
     </div>
   );
 }
+
