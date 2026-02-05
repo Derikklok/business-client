@@ -14,15 +14,23 @@ import { useCustomers } from "@/hooks/useCustomers";
 import { Loader2, Edit2, Trash2, Eye } from "lucide-react";
 import type { Customer } from "@/types/customer.types";
 import CustomerDetailsModel from "./Customer-details-model";
+import EditCustomerModel from "./Edit-Customer-model";
 
 const CustomerDataTable = () => {
   const { data: customers = [], isLoading, error } = useCustomers();
   const [selectedCustomer, setSelectedCustomer] = useState<Customer | null>(null);
   const [dialogOpen, setDialogOpen] = useState(false);
+  const [editingCustomer, setEditingCustomer] = useState<Customer | null>(null);
+  const [editModalOpen, setEditModalOpen] = useState(false);
 
   const handleViewCustomer = (customer: Customer) => {
     setSelectedCustomer(customer);
     setDialogOpen(true);
+  };
+
+  const handleEditCustomer = (customer: Customer) => {
+    setEditingCustomer(customer);
+    setEditModalOpen(true);
   };
 
   if (isLoading) {
@@ -101,7 +109,12 @@ const CustomerDataTable = () => {
                         <Eye className="w-4 h-4" />
                         <span className="hidden sm:inline">View</span>
                       </Button>
-                      <Button variant="ghost" size="sm" className="gap-2">
+                      <Button
+                        variant="ghost"
+                        size="sm"
+                        onClick={() => handleEditCustomer(customer)}
+                        className="gap-2"
+                      >
                         <Edit2 className="w-4 h-4" />
                         <span className="hidden sm:inline">Edit</span>
                       </Button>
@@ -127,6 +140,13 @@ const CustomerDataTable = () => {
         customer={selectedCustomer}
         open={dialogOpen}
         onOpenChange={setDialogOpen}
+      />
+
+      {/* Edit Customer Modal */}
+      <EditCustomerModel
+        customer={editingCustomer}
+        open={editModalOpen}
+        onOpenChange={setEditModalOpen}
       />
     </div>
   );

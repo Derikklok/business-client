@@ -1,29 +1,52 @@
-import { Sheet, SheetContent, SheetDescription, SheetHeader, SheetTitle } from "@/components/ui/sheet";
+import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetDescription } from "@/components/ui/sheet";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Label } from "@/components/ui/label";
-import { useState, type FormEvent } from "react";
+import { useState, type FormEvent, useMemo, useEffect } from "react";
 import { toast } from "sonner";
 import { Loader2, Building2, User, Mail, Phone, MapPin, FileText } from "lucide-react";
-import { useCreateCustomer } from "@/hooks/useCustomers";
+import { useUpdateCustomer } from "@/hooks/useCustomers";
+import type { Customer } from "@/types/customer.types";
 
-interface CreateCustomerModelProps {
+interface EditCustomerModelProps {
+  customer: Customer | null;
   open: boolean;
   onOpenChange: (open: boolean) => void;
 }
 
-const CreateCustomerModel = ({ open, onOpenChange }: CreateCustomerModelProps) => {
-  const [formData, setFormData] = useState({
-    companyName: "",
-    contactPerson: "",
-    email: "",
-    phone: "",
-    address: "",
-    description: "",
-  });
-  const createCustomer = useCreateCustomer();
-  const isLoading = createCustomer.isPending;
+const EditCustomerModel = ({ customer, open, onOpenChange }: EditCustomerModelProps) => {
+  const updateCustomer = useUpdateCustomer();
+  const isLoading = updateCustomer.isPending;
+
+  // Compute initial form data from customer prop
+  const initialFormData = useMemo(() => {
+    if (!customer) {
+      return {
+        companyName: "",
+        contactPerson: "",
+        email: "",
+        phone: "",
+        address: "",
+        description: "",
+      };
+    }
+    return {
+      companyName: customer.companyName,
+      contactPerson: customer.contactPerson,
+      email: customer.email,
+      phone: customer.phone.toString(),
+      address: customer.address,
+      description: customer.description,
+    };
+  }, [customer]);
+
+  const [formData, setFormData] = useState(initialFormData);
+
+  // Sync form data when customer changes
+  useEffect(() => {
+    setFormData(initialFormData);
+  }, [initialFormData]);
 
   const handleInputChange = (
     e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
@@ -37,6 +60,11 @@ const CreateCustomerModel = ({ open, onOpenChange }: CreateCustomerModelProps) =
 
   const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
+
+    if (!customer) {
+      toast.error("Customer data not found");
+      return;
+    }
 
     // Validation
     if (
@@ -57,38 +85,35 @@ const CreateCustomerModel = ({ open, onOpenChange }: CreateCustomerModelProps) =
       return;
     }
 
-    // Phone validation (basic)
+    // Phone validation
     if (!/^\d{10,}$/.test(formData.phone.replace(/\D/g, ""))) {
       toast.error("Please enter a valid phone number");
       return;
     }
 
     try {
-      // Convert phone to number and call API
-      await createCustomer.mutateAsync({
-        companyName: formData.companyName,
-        contactPerson: formData.contactPerson,
-        email: formData.email,
-        phone: parseInt(formData.phone.replace(/\D/g, ""), 10),
-        address: formData.address,
-        description: formData.description,
+      // Call API to update customer
+      await updateCustomer.mutateAsync({
+        id: customer.id,
+        data: {
+          companyName: formData.companyName,
+          contactPerson: formData.contactPerson,
+          email: formData.email,
+          phone: parseInt(formData.phone.replace(/\D/g, ""), 10),
+          address: formData.address,
+          description: formData.description,
+        },
       });
 
-      toast.success("Customer created successfully!");
+      toast.success("Customer updated successfully!");
       onOpenChange(false);
-      setFormData({
-        companyName: "",
-        contactPerson: "",
-        email: "",
-        phone: "",
-        address: "",
-        description: "",
-      });
     } catch (error) {
-      toast.error("Failed to create customer");
+      toast.error("Failed to update customer");
       console.error(error);
     }
   };
+
+  if (!customer) return null;
 
   return (
     <Sheet open={open} onOpenChange={onOpenChange}>
@@ -101,10 +126,10 @@ const CreateCustomerModel = ({ open, onOpenChange }: CreateCustomerModelProps) =
             </div>
             <div className="flex-1">
               <SheetTitle className="text-2xl font-bold text-foreground">
-                Add New Customer
+                {customer.companyName}
               </SheetTitle>
               <SheetDescription className="mt-1 text-sm">
-                Fill in the details below to create a new customer record
+                Update customer details below
               </SheetDescription>
             </div>
           </div>
@@ -259,7 +284,7 @@ const CreateCustomerModel = ({ open, onOpenChange }: CreateCustomerModelProps) =
               disabled={isLoading}
             >
               {isLoading && <Loader2 className="w-4 h-4 animate-spin" />}
-              {isLoading ? "Creating..." : "Create Customer"}
+              {isLoading ? "Updating..." : "Update Customer"}
             </Button>
           </div>
         </form>
@@ -268,4 +293,4 @@ const CreateCustomerModel = ({ open, onOpenChange }: CreateCustomerModelProps) =
   );
 };
 
-export default CreateCustomerModel;
+export default EditCustomerModel;

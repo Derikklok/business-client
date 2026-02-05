@@ -19,3 +19,13 @@ export interface CreateCustomerRequest {
   email: string;
   description: string;
 }
+
+/* Payload for update - ? allowed for partial updates*/
+export interface UpdateCustomerRequest {
+  companyName?: string;
+  address?: string;
+  contactPerson?: string;
+  phone?: number;
+  email?: string;
+  description?: string;
+}
