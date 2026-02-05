@@ -6,7 +6,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { Label } from "@/components/ui/label";
 import { Card, CardContent } from "@/components/ui/card";
 import { useProfile, useUpdateProfile, useUploadLogo } from "@/hooks/useProfile";
-import { Building2, Upload, X, Loader2, Phone, Plus, Mail } from "lucide-react";
+import { Building2, Upload, X, Loader2, Phone, Plus, Mail, Edit3, MapPin, Hash, Camera } from "lucide-react";
 import { toast } from "sonner";
 
 const ProfileTab = () => {
@@ -209,15 +209,25 @@ const ProfileTab = () => {
   }
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-8">
       {/* Header */}
-      <div className="flex items-center justify-between">
-        <div>
-          <h2 className="text-xl font-semibold">Business Profile</h2>
-          <p className="text-sm text-muted-foreground">Manage your company information</p>
+      <div className="flex items-center justify-between p-6 bg-linear-to-r from-primary/5 to-transparent rounded-lg border border-primary/10">
+        <div className="space-y-2">
+          <div className="flex items-center gap-3">
+            <div className="p-2 bg-primary/10 rounded-lg">
+              <Building2 className="w-5 h-5 text-primary" />
+            </div>
+            <div>
+              <h2 className="text-2xl font-bold text-foreground">
+                Business Profile
+              </h2>
+              <p className="text-sm text-muted-foreground">Manage your company information and settings</p>
+            </div>
+          </div>
         </div>
         {!isEditing && (
           <Button onClick={handleEditClick} className="gap-2">
+            <Edit3 className="w-4 h-4" />
             Edit Profile
           </Button>
         )}
@@ -225,26 +235,33 @@ const ProfileTab = () => {
 
       {isEditing ? (
         /* Edit Form */
-        <Card>
+        <Card className="border shadow-lg">
           <CardContent className="p-6">
             <form onSubmit={handleSubmit} className="space-y-6">
               {/* Logo Upload Section */}
               <div className="space-y-4">
-                <h3 className="text-sm font-semibold text-foreground/80 uppercase tracking-wide">
-                  Company Logo
-                </h3>
-                <div className="flex items-center gap-6">
+                <div className="flex items-center gap-3">
+                  <div className="p-2 bg-primary/10 rounded-lg">
+                    <Camera className="w-5 h-5 text-primary" />
+                  </div>
+                  <h3 className="text-lg font-semibold text-foreground">
+                    Company Logo
+                  </h3>
+                </div>
+                <div className="flex items-center gap-6 p-6 bg-muted/30 rounded-lg border">
                   {logoPreview ? (
-                    <div className="relative w-24 h-24 rounded-lg border-2 border-primary/30 overflow-hidden bg-muted flex items-center justify-center">
-                      <img
-                        src={logoPreview}
-                        alt="Logo preview"
-                        className="w-full h-full object-cover"
-                      />
+                    <div className="relative">
+                      <div className="w-24 h-24 rounded-lg border-2 border-primary/30 overflow-hidden bg-background">
+                        <img
+                          src={logoPreview}
+                          alt="Logo preview"
+                          className="w-full h-full object-cover"
+                        />
+                      </div>
                       <button
                         type="button"
                         onClick={() => setLogoPreview(null)}
-                        className="absolute top-1 right-1 bg-destructive/90 hover:bg-destructive text-white p-1 rounded"
+                        className="absolute -top-2 -right-2 bg-destructive hover:bg-destructive/90 text-white p-1.5 rounded-full"
                       >
                         <X className="w-3 h-3" />
                       </button>
@@ -294,13 +311,19 @@ const ProfileTab = () => {
 
               {/* Business Information */}
               <div className="space-y-4">
-                <h3 className="text-sm font-semibold text-foreground/80 uppercase tracking-wide">
-                  Business Information
-                </h3>
+                <div className="flex items-center gap-3">
+                  <div className="p-2 bg-primary/10 rounded-lg">
+                    <Building2 className="w-5 h-5 text-primary" />
+                  </div>
+                  <h3 className="text-lg font-semibold text-foreground">
+                    Business Information
+                  </h3>
+                </div>
 
-                <div className="space-y-3">
-                  <div>
-                    <Label htmlFor="businessName" className="text-sm font-medium">
+                <div className="space-y-4">
+                  <div className="space-y-2">
+                    <Label htmlFor="businessName" className="text-sm font-medium flex items-center gap-2">
+                      <Building2 className="w-4 h-4 text-primary" />
                       Business Name *
                     </Label>
                     <Input
@@ -313,8 +336,9 @@ const ProfileTab = () => {
                     />
                   </div>
 
-                  <div>
-                    <Label htmlFor="registrationNumber" className="text-sm font-medium">
+                  <div className="space-y-2">
+                    <Label htmlFor="registrationNumber" className="text-sm font-medium flex items-center gap-2">
+                      <Hash className="w-4 h-4 text-primary" />
                       Registration Number *
                     </Label>
                     <Input
@@ -327,8 +351,9 @@ const ProfileTab = () => {
                     />
                   </div>
 
-                  <div>
-                    <Label htmlFor="address" className="text-sm font-medium">
+                  <div className="space-y-2">
+                    <Label htmlFor="address" className="text-sm font-medium flex items-center gap-2">
+                      <MapPin className="w-4 h-4 text-primary" />
                       Address *
                     </Label>
                     <Textarea
@@ -350,10 +375,14 @@ const ProfileTab = () => {
               {/* Contact Numbers */}
               <div className="space-y-4">
                 <div className="flex items-center justify-between">
-                  <h3 className="text-sm font-semibold text-foreground/80 uppercase tracking-wide flex items-center gap-2">
-                    <Phone className="w-4 h-4" />
-                    Contact Numbers
-                  </h3>
+                  <div className="flex items-center gap-3">
+                    <div className="p-2 bg-primary/10 rounded-lg">
+                      <Phone className="w-5 h-5 text-primary" />
+                    </div>
+                    <h3 className="text-lg font-semibold text-foreground">
+                      Contact Numbers
+                    </h3>
+                  </div>
                   <Button
                     type="button"
                     variant="outline"
@@ -399,10 +428,14 @@ const ProfileTab = () => {
               {/* Email Addresses */}
               <div className="space-y-4">
                 <div className="flex items-center justify-between">
-                  <h3 className="text-sm font-semibold text-foreground/80 uppercase tracking-wide flex items-center gap-2">
-                    <Mail className="w-4 h-4" />
-                    Email Addresses
-                  </h3>
+                  <div className="flex items-center gap-3">
+                    <div className="p-2 bg-primary/10 rounded-lg">
+                      <Mail className="w-5 h-5 text-primary" />
+                    </div>
+                    <h3 className="text-lg font-semibold text-foreground">
+                      Email Addresses
+                    </h3>
+                  </div>
                   <Button
                     type="button"
                     variant="outline"
@@ -475,7 +508,7 @@ const ProfileTab = () => {
             <CardContent className="p-6">
               <div className="flex items-start gap-6">
                 {profile?.logo ? (
-                  <div className="w-32 h-32 rounded-lg border border-border/50 overflow-hidden bg-muted flex items-center justify-center shrink-0">
+                  <div className="w-32 h-32 rounded-lg border border-border/50 overflow-hidden bg-background shadow-lg">
                     <img
                       src={profile.logo}
                       alt="Company logo"
@@ -483,18 +516,22 @@ const ProfileTab = () => {
                     />
                   </div>
                 ) : (
-                  <div className="w-32 h-32 rounded-lg border border-border/50 bg-muted flex items-center justify-center shrink-0">
+                  <div className="w-32 h-32 rounded-lg border border-border/50 bg-muted flex items-center justify-center">
                     <Building2 className="w-12 h-12 text-muted-foreground" />
                   </div>
                 )}
                 <div className="flex-1 space-y-3">
                   <div>
                     <p className="text-xs text-muted-foreground uppercase tracking-wide">Business Name</p>
-                    <p className="text-2xl font-bold text-foreground">{profile?.businessName}</p>
+                    <h1 className="text-2xl font-bold text-foreground">
+                      {profile?.businessName}
+                    </h1>
                   </div>
                   <div>
                     <p className="text-xs text-muted-foreground uppercase tracking-wide">Registration Number</p>
-                    <p className="font-semibold text-foreground">{profile?.registrationNumber}</p>
+                    <p className="font-semibold text-foreground">
+                      {profile?.registrationNumber}
+                    </p>
                   </div>
                 </div>
               </div>
@@ -504,8 +541,19 @@ const ProfileTab = () => {
           {/* Address */}
           <Card>
             <CardContent className="p-6">
-              <p className="text-xs text-muted-foreground uppercase tracking-wide mb-2">Address</p>
-              <p className="text-foreground whitespace-pre-wrap">{profile?.address}</p>
+              <div className="flex items-start gap-4">
+                <div className="p-3 bg-primary rounded-lg">
+                  <MapPin className="w-5 h-5 text-white" />
+                </div>
+                <div className="flex-1 space-y-2">
+                  <h3 className="text-lg font-semibold text-foreground">
+                    Business Address
+                  </h3>
+                  <p className="text-foreground whitespace-pre-wrap">
+                    {profile?.address}
+                  </p>
+                </div>
+              </div>
             </CardContent>
           </Card>
 

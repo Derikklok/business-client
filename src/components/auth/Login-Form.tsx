@@ -45,21 +45,24 @@ export default function Loginform() {
 
   return (
     <div className="flex flex-col gap-8">
-      <Card className="shadow-lg border-0 bg-card/60 backdrop-blur">
-        <CardHeader className="text-center pb-6">
-          <CardTitle className="text-2xl font-semibold tracking-tight">
-            Welcome back
-          </CardTitle>
-          <CardDescription className="text-muted-foreground text-sm">
-            Sign in to your account to continue
-          </CardDescription>
+      <Card className="shadow-2xl bg-card/95 backdrop-blur-xl border border-primary/10">
+        {/* Enhanced Header */}
+        <CardHeader className="text-center pb-6 bg-linear-to-r from-primary/5 to-transparent border-b border-primary/10">
+          <div className="space-y-3">
+            <CardTitle className="text-3xl font-bold tracking-tight bg-linear-to-r from-foreground to-foreground/80 bg-clip-text text-transparent">
+              Welcome back
+            </CardTitle>
+            <CardDescription className="text-muted-foreground font-medium">
+              Sign in to access your business dashboard
+            </CardDescription>
+          </div>
         </CardHeader>
-        <CardContent className="space-y-6">
-          <div className="grid grid-cols-2 gap-3">
+        <CardContent className="space-y-8 p-8">
+          <div className="grid grid-cols-2 gap-4">
             <Button 
               variant="outline" 
               type="button"
-              className="h-11 border-border/50 hover:bg-muted/50 transition-colors"
+              className="h-12 border-primary/20 hover:bg-primary/5 hover:border-primary/30 transition-all duration-200 font-medium"
             >
               <svg 
                 xmlns="http://www.w3.org/2000/svg" 
@@ -94,46 +97,46 @@ export default function Loginform() {
           
           <div className="relative">
             <div className="absolute inset-0 flex items-center">
-              <span className="w-full border-t border-border/40" />
+              <span className="w-full border-t border-primary/20" />
             </div>
             <div className="relative flex justify-center text-xs uppercase">
-              <span className="bg-card px-3 text-muted-foreground font-medium">
+              <span className="bg-card px-4 text-muted-foreground font-semibold tracking-wider">
                 Or continue with email
               </span>
             </div>
           </div>
 
-          <form onSubmit={handleSubmit} className="space-y-5">
-            <FieldGroup>
+          <form onSubmit={handleSubmit} className="space-y-6">
+            <FieldGroup className="space-y-5">
               <Field>
                 <FieldLabel 
                   htmlFor="email" 
-                  className="text-sm font-medium text-foreground"
+                  className="text-sm font-semibold text-foreground/90"
                 >
                   Email address
                 </FieldLabel>
                 <Input
                   id="email"
                   type="email"
-                  placeholder="Enter your email"
+                  placeholder="Enter your email address"
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
                   required
                   disabled={login.isPending}
-                  className="h-11 border-border/50 bg-background/50 focus:bg-background transition-colors"
+                  className="h-12 border-primary/20 bg-background/50 focus:bg-background focus:border-primary/40 transition-all duration-200 font-medium"
                 />
               </Field>
               <Field>
                 <div className="flex items-center justify-between">
                   <FieldLabel 
                     htmlFor="password" 
-                    className="text-sm font-medium text-foreground"
+                    className="text-sm font-semibold text-foreground/90"
                   >
                     Password
                   </FieldLabel>
                   <Link
                     to="#"
-                    className="text-sm text-primary hover:text-primary/80 font-medium transition-colors"
+                    className="text-sm text-primary hover:text-primary/70 font-semibold transition-colors hover:underline"
                   >
                     Forgot password?
                   </Link>
@@ -146,14 +149,14 @@ export default function Loginform() {
                   onChange={(e) => setPassword(e.target.value)}
                   required
                   disabled={login.isPending}
-                  className="h-11 border-border/50 bg-background/50 focus:bg-background transition-colors"
+                  className="h-12 border-primary/20 bg-background/50 focus:bg-background focus:border-primary/40 transition-all duration-200 font-medium"
                 />
               </Field>
-              <Field className="pt-2">
+              <Field className="pt-3">
                 <Button 
                   type="submit" 
                   disabled={login.isPending || !email || !password}
-                  className="w-full h-11 font-medium transition-all duration-200 hover:scale-[1.02] active:scale-[0.98]"
+                  className="w-full h-12 font-semibold text-base bg-linear-to-r from-primary to-primary/90 hover:from-primary/90 hover:to-primary/80 transition-all duration-200 hover:scale-[1.02] active:scale-[0.98] shadow-lg hover:shadow-xl"
                 >
                   {login.isPending ? (
                     <>
@@ -171,12 +174,12 @@ export default function Loginform() {
             </FieldGroup>
           </form>
           
-          <div className="text-center">
-            <FieldDescription className="text-muted-foreground">
+          <div className="text-center pt-2">
+            <FieldDescription className="text-muted-foreground font-medium">
               Don't have an account? {" "}
               <Link 
                 to="/register" 
-                className="text-primary hover:text-primary/80 font-medium transition-colors"
+                className="text-primary hover:text-primary/70 font-semibold transition-colors hover:underline"
               >
                 Create account
               </Link>
@@ -185,13 +188,13 @@ export default function Loginform() {
         </CardContent>
       </Card>
       
-      <FieldDescription className="text-center text-xs text-muted-foreground px-8 leading-relaxed">
+      <FieldDescription className="text-center text-xs text-muted-foreground px-8 leading-relaxed font-medium">
         By signing in, you agree to our{" "}
-        <a href="#" className="text-primary hover:text-primary/80 transition-colors">
+        <a href="#" className="text-primary hover:text-primary/70 transition-colors hover:underline font-semibold">
           Terms of Service
         </a>{" "}
         and{" "}
-        <a href="#" className="text-primary hover:text-primary/80 transition-colors">
+        <a href="#" className="text-primary hover:text-primary/70 transition-colors hover:underline font-semibold">
           Privacy Policy
         </a>
       </FieldDescription>

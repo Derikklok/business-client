@@ -1,6 +1,6 @@
 
 import { Button } from "@/components/ui/button";
-import { Plus, Search } from "lucide-react";
+import { Plus, Search, Users } from "lucide-react";
 import { Input } from "@/components/ui/input";
 import { useState } from "react";
 import CustomerDataTable from "@/components/customers/Customer-data-table";
@@ -12,14 +12,23 @@ const Customertab = () => {
 
   return (
     <div className="space-y-6">
-      {/* Header with action button */}
-      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
-        <div>
-          <h2 className="text-xl font-semibold">Customers</h2>
-          <p className="text-sm text-muted-foreground">Manage and organize your customer information</p>
+      {/* Header */}
+      <div className="flex items-center justify-between p-6 bg-linear-to-r from-primary/5 to-transparent rounded-lg border border-primary/10">
+        <div className="space-y-2">
+          <div className="flex items-center gap-3">
+            <div className="p-2 bg-primary/10 rounded-lg">
+              <Users className="w-5 h-5 text-primary" />
+            </div>
+            <div>
+              <h2 className="text-2xl font-bold text-foreground">
+                Customers
+              </h2>
+              <p className="text-sm text-muted-foreground">Manage and organize your customer information</p>
+            </div>
+          </div>
         </div>
         <Button 
-          className="gap-2 w-full sm:w-auto"
+          className="gap-2"
           onClick={() => setCreateModalOpen(true)}
         >
           <Plus className="w-4 h-4" />
