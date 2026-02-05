@@ -226,7 +226,8 @@ const ProfileTab = () => {
     );
   }
 
-  if (isNoProfile) {
+  // Show create profile form when editing and no profile exists
+  if (isNoProfile && !isEditing) {
     return (
       <div className="space-y-8">
         {/* Header */}
@@ -269,7 +270,7 @@ const ProfileTab = () => {
     );
   }
 
-  if (error) {
+  if (error && !isNoProfile) {
     return (
       <Card className="border-destructive/50">
         <CardContent className="flex items-center justify-center py-12">
@@ -297,14 +298,25 @@ const ProfileTab = () => {
               <h2 className="text-2xl font-bold text-foreground">
                 Business Profile
               </h2>
-              <p className="text-sm text-muted-foreground">Manage your company information and settings</p>
+              <p className="text-sm text-muted-foreground">
+                {profile ? "Manage your company information and settings" : "Set up your business information and branding"}
+              </p>
             </div>
           </div>
         </div>
         {!isEditing && (
           <Button onClick={handleEditClick} className="gap-2">
-            <Edit3 className="w-4 h-4" />
-            Edit Profile
+            {profile ? (
+              <>
+                <Edit3 className="w-4 h-4" />
+                Edit Profile
+              </>
+            ) : (
+              <>
+                <Plus className="w-4 h-4" />
+                Create Profile
+              </>
+            )}
           </Button>
         )}
       </div>
@@ -560,17 +572,20 @@ const ProfileTab = () => {
                     setIsEditing(false);
                     setLogoPreview(profile?.logo || null);
                   }}
-                  disabled={updateProfile.isPending || uploadLogo.isPending}
+                  disabled={(updateProfile.isPending || createProfile.isPending) || uploadLogo.isPending}
                 >
                   Cancel
                 </Button>
                 <Button
                   type="submit"
-                  disabled={updateProfile.isPending || uploadLogo.isPending}
+                  disabled={(updateProfile.isPending || createProfile.isPending) || uploadLogo.isPending}
                   className="gap-2"
                 >
-                  {updateProfile.isPending && <Loader2 className="w-4 h-4 animate-spin" />}
-                  {updateProfile.isPending ? "Saving..." : "Save Changes"}
+                  {(updateProfile.isPending || createProfile.isPending) && <Loader2 className="w-4 h-4 animate-spin" />}
+                  {profile 
+                    ? ((updateProfile.isPending) ? "Saving..." : "Save Changes")
+                    : ((createProfile.isPending) ? "Creating..." : "Create Profile")
+                  }
                 </Button>
               </div>
             </form>
