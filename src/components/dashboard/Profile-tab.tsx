@@ -18,12 +18,28 @@ const ProfileTab = () => {
   const [logoPreview, setLogoPreview] = useState<string | null>(profile?.logo || null);
 
   const [formData, setFormData] = useState({
-    businessName: profile?.businessName || "",
-    registrationNumber: profile?.registrationNumber || "",
-    address: profile?.address || "",
-    contactNumbers: profile?.contactNumbers || [""],
-    emailAddresses: profile?.emailAddresses || [""],
+    businessName: "",
+    registrationNumber: "",
+    address: "",
+    contactNumbers: [""],
+    emailAddresses: [""],
+    logo: "",
   });
+
+  const handleEditClick = () => {
+    if (profile) {
+      setFormData({
+        businessName: profile.businessName || "",
+        registrationNumber: profile.registrationNumber || "",
+        address: profile.address || "",
+        contactNumbers: profile.contactNumbers || [""],
+        emailAddresses: profile.emailAddresses || [""],
+        logo: profile.logo || "",
+      });
+      setLogoPreview(profile.logo || null);
+    }
+    setIsEditing(true);
+  };
 
   const handleInputChange = (
     e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
@@ -106,8 +122,11 @@ const ProfileTab = () => {
 
     // Upload to server
     try {
-      await uploadLogo.mutateAsync(file);
-      toast.success("Logo uploaded successfully");
+      const response = await uploadLogo.mutateAsync(file);
+      // Update form data with the uploaded logo URL
+      setFormData(prev => ({ ...prev, logo: response.url }));
+      toast.success("Logo uploaded successfully!");
+      toast.info(`URL: ${response.url}`, { duration: 5000 });
     } catch {
       toast.error("Failed to upload logo");
       setLogoPreview(profile?.logo || null);
@@ -150,6 +169,7 @@ const ProfileTab = () => {
         address: formData.address,
         contactNumbers: formData.contactNumbers,
         emailAddresses: formData.emailAddresses,
+        ...(formData.logo && { logo: formData.logo }),
       });
 
       toast.success("Business profile updated successfully!");
@@ -197,7 +217,7 @@ const ProfileTab = () => {
           <p className="text-sm text-muted-foreground">Manage your company information</p>
         </div>
         {!isEditing && (
-          <Button onClick={() => setIsEditing(true)} className="gap-2">
+          <Button onClick={handleEditClick} className="gap-2">
             Edit Profile
           </Button>
         )}
