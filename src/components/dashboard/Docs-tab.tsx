@@ -1,7 +1,6 @@
 
 import { Button } from "@/components/ui/button";
-import { Card, CardContent } from "@/components/ui/card";
-import { Plus, Search, Filter, FileText, DollarSign, Calendar } from "lucide-react";
+import { Plus, Search, Filter, FileText } from "lucide-react";
 import { Input } from "@/components/ui/input";
 import {
   Select,
@@ -10,12 +9,31 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import type { Document } from "@/types/dashboard.types";
+import { useDocuments } from "@/hooks/useDocuments";
+import DocumentDataTable from "@/components/documents/Document-data-table";
+import { useState } from "react";
+import type { DocumentResponse } from "@/types/document.types";
 
 const Documentstab = () => {
-  // Placeholder state - will be replaced with actual data management
-  const documents: Document[] = [];
-  const docTypes = ["Invoices", "Estimates", "Quotes", "All"];
+  const { data: documents = [], isLoading, error } = useDocuments();
+  const [searchTerm, setSearchTerm] = useState("");
+  const [selectedType, setSelectedType] = useState("all");
+  const docTypes = [
+    { label: "All", value: "all" },
+    { label: "Invoice", value: "invoice" },
+    { label: "Estimate", value: "estimate" },
+    { label: "Purchase Order", value: "purchase_order" },
+    { label: "Rental Proposal", value: "rental_proposal" }
+  ];
+
+  // Filter documents based on search term and type
+  const filteredDocuments = documents.filter((doc: DocumentResponse) => {
+    const matchesSearch = doc.documentNo.toLowerCase().includes(searchTerm.toLowerCase()) ||
+                         doc.customerName.toLowerCase().includes(searchTerm.toLowerCase()) ||
+                         doc.documentTitle.toLowerCase().includes(searchTerm.toLowerCase());
+    const matchesType = selectedType === "all" || doc.documentType === selectedType;
+    return matchesSearch && matchesType;
+  });
 
   return (
     <div className="space-y-6">
@@ -53,85 +71,36 @@ const Documentstab = () => {
           <Input 
             placeholder="Search documents..."
             className="pl-10"
+            value={searchTerm}
+            onChange={(e) => setSearchTerm(e.target.value)}
           />
         </div>
-        <Select defaultValue="all">
+        <Select value={selectedType} onValueChange={setSelectedType}>
           <SelectTrigger className="w-full sm:w-40">
             <Filter className="w-4 h-4 mr-2" />
             <SelectValue placeholder="Document type" />
           </SelectTrigger>
           <SelectContent>
             {docTypes.map((type) => (
-              <SelectItem key={type} value={type.toLowerCase()}>
-                {type}
+              <SelectItem key={type.value} value={type.value}>
+                {type.label}
               </SelectItem>
             ))}
           </SelectContent>
         </Select>
       </div>
 
-      {/* Empty State */}
-      {documents.length === 0 ? (
-        <Card className="border-dashed">
-          <CardContent className="flex flex-col items-center justify-center py-12">
-            <div className="w-12 h-12 rounded-lg bg-primary/10 flex items-center justify-center mb-4">
-              <FileText className="w-6 h-6 text-primary" />
-            </div>
-            <h3 className="font-semibold text-lg mb-2">No documents yet</h3>
-            <p className="text-muted-foreground text-center mb-6 max-w-xs">
-              Create your first invoice or estimate to begin tracking your business documents
-            </p>
-            <div className="flex gap-2 flex-col sm:flex-row">
-              <Button className="gap-2">
-                <Plus className="w-4 h-4" />
-                Create Invoice
-              </Button>
-              <Button variant="outline" className="gap-2">
-                <Plus className="w-4 h-4" />
-                Create Estimate
-              </Button>
-            </div>
-          </CardContent>
-        </Card>
-      ) : (
-        /* Documents List - will be populated with data */
-        <div className="space-y-3">
-          {documents.map((doc, index) => (
-            <Card key={index} className="hover:shadow-md transition-shadow">
-              <CardContent className="flex items-center justify-between p-4">
-                <div className="flex items-start gap-4 flex-1">
-                  <div className="w-10 h-10 rounded-lg bg-primary/10 flex items-center justify-center">
-                    <FileText className="w-5 h-5 text-primary" />
-                  </div>
-                  <div className="flex-1 min-w-0">
-                    <h3 className="font-semibold text-sm truncate">{doc.documentNumber}</h3>
-                    <p className="text-xs text-muted-foreground">{doc.customerName}</p>
-                    <div className="flex gap-3 mt-2 flex-wrap">
-                      <span className="inline-flex items-center gap-1 text-xs text-muted-foreground">
-                        <Calendar className="w-3 h-3" />
-                        {doc.date}
-                      </span>
-                      <span className="inline-flex items-center gap-1 text-xs font-medium">
-                        <DollarSign className="w-3 h-3" />
-                        {doc.amount}
-                      </span>
-                    </div>
-                  </div>
-                </div>
-                <div className="flex gap-2 ml-4">
-                  <span className={`px-2 py-1 rounded text-xs font-medium ${
-                    doc.status === "paid" ? "bg-green-100 text-green-700" :
-                    doc.status === "pending" ? "bg-yellow-100 text-yellow-700" :
-                    "bg-red-100 text-red-700"
-                  }`}>
-                    {doc.status}
-                  </span>
-                  <Button variant="ghost" size="sm">View</Button>
-                </div>
-              </CardContent>
-            </Card>
-          ))}
+      {/* Error State */}
+      {error ? (
+        <div className="text-center py-8">
+          <p className="text-muted-foreground">Failed to load documents. Please try again.</p>
         </div>
+      ) : (
+        /* Documents Data Table */
+        <DocumentDataTable 
+          documents={filteredDocuments} 
+          isLoading={isLoading}
+        />
       )}
     </div>
   );
