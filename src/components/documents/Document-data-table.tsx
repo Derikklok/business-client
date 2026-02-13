@@ -196,7 +196,7 @@ const DocumentDataTable = ({ documents, isLoading }: DocumentDataTableProps) => 
                     <Badge 
                       className={`${getStatusColor(doc.status, doc.transactionInfo.state)} text-xs`}
                     >
-                      {doc.status === "completed" ? doc.transactionInfo.state : doc.status}
+                      {doc.status === "draft" ? "Draft" : "Completed"}
                     </Badge>
                   </TableCell>
                   <TableCell className="text-muted-foreground">

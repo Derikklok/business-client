@@ -20,6 +20,8 @@ import {
   Clock,
   User
 } from "lucide-react";
+import DocumentCreateModel from "./Document-create-model";
+import { useState } from "react";
 
 interface DocumentDetailsModalProps {
   documentId: string | null;
@@ -29,6 +31,7 @@ interface DocumentDetailsModalProps {
 
 const DocumentDetailsModal = ({ documentId, open, onClose }: DocumentDetailsModalProps) => {
   const { data: document, isLoading, error } = useDocument(documentId || "");
+  const [editModalOpen, setEditModalOpen] = useState(false);
 
   const formatDate = (dateString: string) => {
     return new Date(dateString).toLocaleDateString('en-US', {
@@ -132,7 +135,7 @@ const DocumentDetailsModal = ({ documentId, open, onClose }: DocumentDetailsModa
                 </DialogDescription>
                 <div className="flex items-center gap-2 mt-3">
                   <Badge className={getStatusColor(document.status, document.transactionInfo.state)}>
-                    {document.status === "completed" ? document.transactionInfo.state : document.status}
+                    {document.status === "draft" ? "Draft" : "Completed"}
                   </Badge>
                   <Badge className={getDocumentTypeColor(document.documentType)}>
                     {formatDocumentType(document.documentType)}
@@ -260,7 +263,7 @@ const DocumentDetailsModal = ({ documentId, open, onClose }: DocumentDetailsModa
                     Document Status
                   </div>
                   <Badge className={getStatusColor(document.status, document.transactionInfo.state)}>
-                    {document.status === "completed" ? document.transactionInfo.state : document.status}
+                    {document.status === "draft" ? "Draft" : "Completed"}
                   </Badge>
                 </div>
 
@@ -368,11 +371,19 @@ const DocumentDetailsModal = ({ documentId, open, onClose }: DocumentDetailsModa
           </Button>
           <Button 
             className="gap-2 bg-primary hover:bg-primary/90 min-w-32"
+            onClick={() => setEditModalOpen(true)}
           >
             <Edit3 className="w-4 h-4" />
             Edit Document
           </Button>
         </div>
+
+        {/* Edit Document Modal */}
+        <DocumentCreateModel
+          open={editModalOpen}
+          onClose={() => setEditModalOpen(false)}
+          documentToEdit={document}
+        />
       </DialogContent>
     </Dialog>
   );

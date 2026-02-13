@@ -1,6 +1,6 @@
 
 import { Button } from "@/components/ui/button";
-import { Plus, Search, Filter, FileText } from "lucide-react";
+import { Plus, Search, Filter, FileText, ChevronDown } from "lucide-react";
 import { Input } from "@/components/ui/input";
 import {
   Select,
@@ -9,15 +9,25 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
 import { useDocuments } from "@/hooks/useDocuments";
 import DocumentDataTable from "@/components/documents/Document-data-table";
+import DocumentCreateModel from "@/components/documents/Document-create-model";
 import { useState } from "react";
-import type { DocumentResponse } from "@/types/document.types";
+import type { DocumentResponse, DocumentType } from "@/types/document.types";
 
 const Documentstab = () => {
   const { data: documents = [], isLoading, error } = useDocuments();
   const [searchTerm, setSearchTerm] = useState("");
   const [selectedType, setSelectedType] = useState("all");
+  const [createModalOpen, setCreateModalOpen] = useState(false);
+  const [selectedDocType, setSelectedDocType] = useState<DocumentType>("invoice");
+
   const docTypes = [
     { label: "All", value: "all" },
     { label: "Invoice", value: "invoice" },
@@ -34,6 +44,11 @@ const Documentstab = () => {
     const matchesType = selectedType === "all" || doc.documentType === selectedType;
     return matchesSearch && matchesType;
   });
+
+  const handleCreateDocument = (docType: DocumentType) => {
+    setSelectedDocType(docType);
+    setCreateModalOpen(true);
+  };
 
   return (
     <div className="space-y-6">
@@ -53,11 +68,30 @@ const Documentstab = () => {
           </div>
         </div>
         <div className="flex gap-2">
-          <Button variant="outline" className="gap-2">
-            <Plus className="w-4 h-4" />
-            Estimate
-          </Button>
-          <Button className="gap-2">
+          <DropdownMenu>
+            <DropdownMenuTrigger asChild>
+              <Button variant="outline" className="gap-2">
+                <Plus className="w-4 h-4" />
+                More
+                <ChevronDown className="w-4 h-4" />
+              </Button>
+            </DropdownMenuTrigger>
+            <DropdownMenuContent align="end">
+              <DropdownMenuItem onClick={() => handleCreateDocument("estimate")}>
+                <Plus className="w-4 h-4 mr-2" />
+                Estimate
+              </DropdownMenuItem>
+              <DropdownMenuItem onClick={() => handleCreateDocument("purchase_order")}>
+                <Plus className="w-4 h-4 mr-2" />
+                Purchase Order
+              </DropdownMenuItem>
+              <DropdownMenuItem onClick={() => handleCreateDocument("rental_proposal")}>
+                <Plus className="w-4 h-4 mr-2" />
+                Rental Proposal
+              </DropdownMenuItem>
+            </DropdownMenuContent>
+          </DropdownMenu>
+          <Button className="gap-2" onClick={() => handleCreateDocument("invoice")}>
             <Plus className="w-4 h-4" />
             Invoice
           </Button>
@@ -102,6 +136,13 @@ const Documentstab = () => {
           isLoading={isLoading}
         />
       )}
+
+      {/* Create Document Modal */}
+      <DocumentCreateModel
+        open={createModalOpen}
+        onClose={() => setCreateModalOpen(false)}
+        documentType={selectedDocType}
+      />
     </div>
   );
 };
