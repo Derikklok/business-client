@@ -19,6 +19,7 @@ import {
 } from "@/components/ui/table";
 import { Card, CardContent } from "@/components/ui/card";
 import DocumentDetailsModal from "./Document-details-model";
+import DocumentCreateModel from "./Document-create-model";
 import { useState } from "react";
 
 interface DocumentDataTableProps {
@@ -29,6 +30,8 @@ interface DocumentDataTableProps {
 const DocumentDataTable = ({ documents, isLoading }: DocumentDataTableProps) => {
   const [selectedDocumentId, setSelectedDocumentId] = useState<string | null>(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [editModalOpen, setEditModalOpen] = useState(false);
+  const [documentToEdit, setDocumentToEdit] = useState<DocumentResponse | null>(null);
 
   const handleViewDocument = (documentId: string) => {
     setSelectedDocumentId(documentId);
@@ -38,6 +41,16 @@ const DocumentDataTable = ({ documents, isLoading }: DocumentDataTableProps) => 
   const handleCloseModal = () => {
     setIsModalOpen(false);
     setSelectedDocumentId(null);
+  };
+
+  const handleEditDocument = (document: DocumentResponse) => {
+    setDocumentToEdit(document);
+    setEditModalOpen(true);
+  };
+
+  const handleCloseEditModal = () => {
+    setEditModalOpen(false);
+    setDocumentToEdit(null);
   };
   const formatDate = (dateString: string) => {
     return new Date(dateString).toLocaleDateString('en-US', {
@@ -219,7 +232,10 @@ const DocumentDataTable = ({ documents, isLoading }: DocumentDataTableProps) => 
                           <Eye className="h-4 w-4" />
                           View
                         </DropdownMenuItem>
-                        <DropdownMenuItem className="gap-2">
+                        <DropdownMenuItem 
+                          className="gap-2"
+                          onClick={() => handleEditDocument(doc)}
+                        >
                           <Edit className="h-4 w-4" />
                           Edit
                         </DropdownMenuItem>
@@ -238,6 +254,13 @@ const DocumentDataTable = ({ documents, isLoading }: DocumentDataTableProps) => 
         documentId={selectedDocumentId}
         open={isModalOpen}
         onClose={handleCloseModal}
+      />
+
+      {/* Edit Document Modal */}
+      <DocumentCreateModel
+        open={editModalOpen}
+        onClose={handleCloseEditModal}
+        documentToEdit={documentToEdit}
       />
     </Card>
   );

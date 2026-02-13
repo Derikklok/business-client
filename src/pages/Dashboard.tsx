@@ -1,24 +1,27 @@
 import { useAuthUser } from "@/hooks/useAuth";
 import { clearUser } from "@/lib/auth";
-import { useNavigate } from "react-router-dom";
-import { useEffect, useState } from "react";
+import { useNavigate, useLocation, Outlet, NavLink } from "react-router-dom";
+import { useEffect } from "react";
 import { Button } from "@/components/ui/button";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { LogOut, Users, FileText, Building2, Settings } from "lucide-react";
-import Customertab from "@/components/dashboard/Customer-tab";
-import Documentstab from "@/components/dashboard/Docs-tab";
-import ProfileTab from "@/components/dashboard/Profile-tab";
 
 export default function Dashboard() {
   const user = useAuthUser();
   const navigate = useNavigate();
-  const [activeTab, setActiveTab] = useState("customers");
+  const location = useLocation();
 
   useEffect(() => {
     if (!user) {
       navigate("/login");
     }
   }, [user, navigate]);
+
+  // Redirect to customers tab if on base dashboard route
+  useEffect(() => {
+    if (location.pathname === "/dashboard" || location.pathname === "/dashboard/") {
+      navigate("/dashboard/customers", { replace: true });
+    }
+  }, [location.pathname, navigate]);
 
   const handleLogout = () => {
     clearUser();
@@ -59,41 +62,56 @@ export default function Dashboard() {
 
       {/* Main Content */}
       <div className="max-w-7xl mx-auto px-6 py-8">
-        <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
-          {/* Tabs Navigation */}
-          <TabsList className="grid w-full max-w-2xl grid-cols-3 mb-6">
-            <TabsTrigger value="customers" className="gap-2">
-              <Users className="w-4 h-4" />
-              <span className="hidden sm:inline">Customers</span>
-              <span className="sm:hidden">Customers</span>
-            </TabsTrigger>
-            <TabsTrigger value="documents" className="gap-2">
-              <FileText className="w-4 h-4" />
-              <span className="hidden sm:inline">Documents</span>
-              <span className="sm:hidden">Docs</span>
-            </TabsTrigger>
-            <TabsTrigger value="profile" className="gap-2">
-              <Settings className="w-4 h-4" />
-              <span className="hidden sm:inline">Profile</span>
-              <span className="sm:hidden">Profile</span>
-            </TabsTrigger>
-          </TabsList>
+        {/* Navigation Tabs */}
+        <div className="flex gap-2 mb-6 border-b border-border">
+          <NavLink
+            to="/dashboard/customers"
+            className={({ isActive }) =>
+              `inline-flex items-center gap-2 px-4 py-3 text-sm font-medium transition-colors border-b-2 ${
+                isActive
+                  ? "border-primary text-primary"
+                  : "border-transparent text-muted-foreground hover:text-foreground hover:border-muted-foreground/50"
+              }`
+            }
+          >
+            <Users className="w-4 h-4" />
+            <span className="hidden sm:inline">Customers</span>
+            <span className="sm:hidden">Customers</span>
+          </NavLink>
+          <NavLink
+            to="/dashboard/documents"
+            className={({ isActive }) =>
+              `inline-flex items-center gap-2 px-4 py-3 text-sm font-medium transition-colors border-b-2 ${
+                isActive
+                  ? "border-primary text-primary"
+                  : "border-transparent text-muted-foreground hover:text-foreground hover:border-muted-foreground/50"
+              }`
+            }
+          >
+            <FileText className="w-4 h-4" />
+            <span className="hidden sm:inline">Documents</span>
+            <span className="sm:hidden">Docs</span>
+          </NavLink>
+          <NavLink
+            to="/dashboard/profile"
+            className={({ isActive }) =>
+              `inline-flex items-center gap-2 px-4 py-3 text-sm font-medium transition-colors border-b-2 ${
+                isActive
+                  ? "border-primary text-primary"
+                  : "border-transparent text-muted-foreground hover:text-foreground hover:border-muted-foreground/50"
+              }`
+            }
+          >
+            <Settings className="w-4 h-4" />
+            <span className="hidden sm:inline">Profile</span>
+            <span className="sm:hidden">Profile</span>
+          </NavLink>
+        </div>
 
-          {/* Customers Tab */}
-          <TabsContent value="customers" className="space-y-4">
-            <Customertab />
-          </TabsContent>
-
-          {/* Documents Tab */}
-          <TabsContent value="documents" className="space-y-4">
-            <Documentstab />
-          </TabsContent>
-
-          {/* Profile Tab */}
-          <TabsContent value="profile" className="space-y-4">
-            <ProfileTab />
-          </TabsContent>
-        </Tabs>
+        {/* Route Content */}
+        <div className="space-y-4">
+          <Outlet />
+        </div>
       </div>
     </div>
   );
