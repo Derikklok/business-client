@@ -7,6 +7,7 @@ import ProtectedRoute from "./components/ProtectedRoute";
 import Customertab from "./components/dashboard/Customer-tab";
 import Documentstab from "./components/dashboard/Docs-tab";
 import ProfileTab from "./components/dashboard/Profile-tab";
+import Inventory from "./pages/Inventory";
 
 const App = () => {
   return (
@@ -28,6 +29,7 @@ const App = () => {
         <Route path="customers" element={<Customertab />} />
         <Route path="documents" element={<Documentstab />} />
         <Route path="profile" element={<ProfileTab />} />
+        <Route path="inventory" element={<Inventory />} />
       </Route>
 
       {/* 404 Not Found */}

@@ -1,8 +1,15 @@
 
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
-import { FileText, Eye, Edit, MoreHorizontal } from "lucide-react";
+import { FileText, Eye, Edit, MoreHorizontal, Package } from "lucide-react";
 import type { DocumentResponse } from "@/types/document.types";
+import { useNavigate } from "react-router-dom";
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipProvider,
+  TooltipTrigger,
+} from "@/components/ui/tooltip";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -28,6 +35,7 @@ interface DocumentDataTableProps {
 }
 
 const DocumentDataTable = ({ documents, isLoading }: DocumentDataTableProps) => {
+  const navigate = useNavigate();
   const [selectedDocumentId, setSelectedDocumentId] = useState<string | null>(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [editModalOpen, setEditModalOpen] = useState(false);
@@ -51,6 +59,10 @@ const DocumentDataTable = ({ documents, isLoading }: DocumentDataTableProps) => 
   const handleCloseEditModal = () => {
     setEditModalOpen(false);
     setDocumentToEdit(null);
+  };
+
+  const handleGoToInventory = (documentId: string) => {
+    navigate(`/dashboard/inventory?documentId=${documentId}`);
   };
   const formatDate = (dateString: string) => {
     return new Date(dateString).toLocaleDateString('en-US', {
@@ -218,29 +230,48 @@ const DocumentDataTable = ({ documents, isLoading }: DocumentDataTableProps) => 
                     </div>
                   </TableCell>
                   <TableCell className="text-right">
-                    <DropdownMenu>
-                      <DropdownMenuTrigger asChild>
-                        <Button variant="ghost" size="sm" className="h-8 w-8 p-0">
-                          <MoreHorizontal className="h-4 w-4" />
-                        </Button>
-                      </DropdownMenuTrigger>
-                      <DropdownMenuContent align="end" className="w-40">
-                        <DropdownMenuItem 
-                          className="gap-2"
-                          onClick={() => handleViewDocument(doc.id)}
-                        >
-                          <Eye className="h-4 w-4" />
-                          View
-                        </DropdownMenuItem>
-                        <DropdownMenuItem 
-                          className="gap-2"
-                          onClick={() => handleEditDocument(doc)}
-                        >
-                          <Edit className="h-4 w-4" />
-                          Edit
-                        </DropdownMenuItem>
-                      </DropdownMenuContent>
-                    </DropdownMenu>
+                    <div className="flex items-center justify-end gap-2">
+                      <TooltipProvider>
+                        <Tooltip>
+                          <TooltipTrigger asChild>
+                            <Button 
+                              variant="ghost" 
+                              size="sm" 
+                              className="h-8 w-8 p-0"
+                              onClick={() => handleGoToInventory(doc.id)}
+                            >
+                              <Package className="h-4 w-4" />
+                            </Button>
+                          </TooltipTrigger>
+                          <TooltipContent>
+                            <p>Go to inventory</p>
+                          </TooltipContent>
+                        </Tooltip>
+                      </TooltipProvider>
+                      <DropdownMenu>
+                        <DropdownMenuTrigger asChild>
+                          <Button variant="ghost" size="sm" className="h-8 w-8 p-0">
+                            <MoreHorizontal className="h-4 w-4" />
+                          </Button>
+                        </DropdownMenuTrigger>
+                        <DropdownMenuContent align="end" className="w-40">
+                          <DropdownMenuItem 
+                            className="gap-2"
+                            onClick={() => handleViewDocument(doc.id)}
+                          >
+                            <Eye className="h-4 w-4" />
+                            View
+                          </DropdownMenuItem>
+                          <DropdownMenuItem 
+                            className="gap-2"
+                            onClick={() => handleEditDocument(doc)}
+                          >
+                            <Edit className="h-4 w-4" />
+                            Edit
+                          </DropdownMenuItem>
+                        </DropdownMenuContent>
+                      </DropdownMenu>
+                    </div>
                   </TableCell>
                 </TableRow>
               ))}
