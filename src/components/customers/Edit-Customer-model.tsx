@@ -7,7 +7,7 @@ import { useState, type FormEvent, useMemo, useEffect } from "react";
 import { toast } from "sonner";
 import { Loader2, Building2, User, Mail, Phone, MapPin, FileText } from "lucide-react";
 import { useUpdateCustomer } from "@/hooks/useCustomers";
-import type { Customer } from "@/types/customer.types";
+import type { Customer, UpdateCustomerRequest } from "@/types/customer.types";
 
 interface EditCustomerModelProps {
   customer: Customer | null;
@@ -33,9 +33,9 @@ const EditCustomerModel = ({ customer, open, onOpenChange }: EditCustomerModelPr
     }
     return {
       companyName: customer.companyName,
-      contactPerson: customer.contactPerson,
-      email: customer.email,
-      phone: customer.phone.toString(),
+      contactPerson: customer.contactPerson || "",
+      email: customer.email || "",
+      phone: customer.phone ? customer.phone.toString() : "",
       address: customer.address,
       description: customer.description,
     };
@@ -69,40 +69,53 @@ const EditCustomerModel = ({ customer, open, onOpenChange }: EditCustomerModelPr
     // Validation
     if (
       !formData.companyName ||
-      !formData.contactPerson ||
-      !formData.email ||
-      !formData.phone ||
       !formData.address
     ) {
       toast.error("Please fill in all required fields");
       return;
     }
 
-    // Email validation
-    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-    if (!emailRegex.test(formData.email)) {
-      toast.error("Please enter a valid email address");
-      return;
+    // Email validation (only if provided)
+    if (formData.email && formData.email.trim()) {
+      const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+      if (!emailRegex.test(formData.email)) {
+        toast.error("Please enter a valid email address");
+        return;
+      }
     }
 
-    // Phone validation
-    if (!/^\d{10,}$/.test(formData.phone.replace(/\D/g, ""))) {
-      toast.error("Please enter a valid phone number");
-      return;
+    // Phone validation (only if provided)
+    if (formData.phone && formData.phone.trim()) {
+      if (!/^\d{10,}$/.test(formData.phone.replace(/\D/g, ""))) {
+        toast.error("Please enter a valid phone number");
+        return;
+      }
     }
 
     try {
+      // Prepare update data, only include optional fields if they have values
+      const updateData: UpdateCustomerRequest = {
+        companyName: formData.companyName,
+        address: formData.address,
+        description: formData.description,
+      };
+
+      if (formData.contactPerson && formData.contactPerson.trim()) {
+        updateData.contactPerson = formData.contactPerson;
+      }
+
+      if (formData.email && formData.email.trim()) {
+        updateData.email = formData.email;
+      }
+
+      if (formData.phone && formData.phone.trim()) {
+        updateData.phone = parseInt(formData.phone.replace(/\D/g, ""), 10);
+      }
+
       // Call API to update customer
       await updateCustomer.mutateAsync({
         id: customer.id,
-        data: {
-          companyName: formData.companyName,
-          contactPerson: formData.contactPerson,
-          email: formData.email,
-          phone: parseInt(formData.phone.replace(/\D/g, ""), 10),
-          address: formData.address,
-          description: formData.description,
-        },
+        data: updateData,
       });
 
       toast.success("Customer updated successfully!");
@@ -166,7 +179,7 @@ const EditCustomerModel = ({ customer, open, onOpenChange }: EditCustomerModelPr
                   <div className="space-y-2">
                     <Label htmlFor="contactPerson" className="text-sm font-semibold flex items-center gap-2">
                       <User className="w-4 h-4 text-primary" />
-                      Contact Person <span className="text-destructive">*</span>
+                      Contact Person
                     </Label>
                     <Input
                       id="contactPerson"
@@ -181,7 +194,7 @@ const EditCustomerModel = ({ customer, open, onOpenChange }: EditCustomerModelPr
                   <div className="space-y-2">
                     <Label htmlFor="email" className="text-sm font-semibold flex items-center gap-2">
                       <Mail className="w-4 h-4 text-primary" />
-                      Email Address <span className="text-destructive">*</span>
+                      Email Address
                     </Label>
                     <Input
                       id="email"
@@ -210,7 +223,7 @@ const EditCustomerModel = ({ customer, open, onOpenChange }: EditCustomerModelPr
                 <div className="space-y-2">
                   <Label htmlFor="phone" className="text-sm font-semibold flex items-center gap-2">
                     <Phone className="w-4 h-4 text-primary" />
-                    Phone Number <span className="text-destructive">*</span>
+                    Phone Number
                   </Label>
                   <Input
                     id="phone"

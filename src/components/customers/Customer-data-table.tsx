@@ -78,11 +78,11 @@ const CustomerDataTable = ({ searchQuery = "", highlightCustomerId }: CustomerDa
     return customers.filter((customer) => {
       const searchFields = [
         customer.companyName,
-        customer.contactPerson,
-        customer.email,
+        customer.contactPerson || '',
+        customer.email || '',
         customer.registrationNumber,
         customer.address,
-        customer.phone.toString(),
+        customer.phone ? customer.phone.toString() : '',
       ].join(' ').toLowerCase();
       
       return searchFields.includes(query);

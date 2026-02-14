@@ -69,30 +69,36 @@ const CustomerDetailsModel = ({ customer, open, onOpenChange }: CustomerDetailsM
               </h3>
               <div className="space-y-4">
                 {/* Contact Person */}
-                <div className="p-4 bg-muted/30 rounded-lg border border-border/50 hover:border-primary/30 transition-colors">
-                  <p className="text-xs text-muted-foreground font-medium mb-2">Contact Person</p>
-                  <p className="text-foreground font-semibold">{customer.contactPerson}</p>
-                </div>
+                {customer.contactPerson && (
+                  <div className="p-4 bg-muted/30 rounded-lg border border-border/50 hover:border-primary/30 transition-colors">
+                    <p className="text-xs text-muted-foreground font-medium mb-2">Contact Person</p>
+                    <p className="text-foreground font-semibold">{customer.contactPerson}</p>
+                  </div>
+                )}
 
                 {/* Email */}
-                <div className="p-4 bg-muted/30 rounded-lg border border-border/50 hover:border-primary/30 transition-colors">
-                  <p className="text-xs text-muted-foreground font-medium mb-2 flex items-center gap-1">
-                    <Mail className="w-3 h-3" />
-                    Email Address
-                  </p>
-                  <p className="text-foreground font-semibold text-sm break-all hover:text-primary transition-colors cursor-pointer">
-                    {customer.email}
-                  </p>
-                </div>
+                {customer.email && (
+                  <div className="p-4 bg-muted/30 rounded-lg border border-border/50 hover:border-primary/30 transition-colors">
+                    <p className="text-xs text-muted-foreground font-medium mb-2 flex items-center gap-1">
+                      <Mail className="w-3 h-3" />
+                      Email Address
+                    </p>
+                    <p className="text-foreground font-semibold text-sm break-all hover:text-primary transition-colors cursor-pointer">
+                      {customer.email}
+                    </p>
+                  </div>
+                )}
 
                 {/* Phone */}
-                <div className="p-4 bg-muted/30 rounded-lg border border-border/50 hover:border-primary/30 transition-colors">
-                  <p className="text-xs text-muted-foreground font-medium mb-2 flex items-center gap-1">
-                    <Phone className="w-3 h-3" />
-                    Phone Number
-                  </p>
-                  <p className="text-foreground font-semibold">{customer.phone}</p>
-                </div>
+                {customer.phone && (
+                  <div className="p-4 bg-muted/30 rounded-lg border border-border/50 hover:border-primary/30 transition-colors">
+                    <p className="text-xs text-muted-foreground font-medium mb-2 flex items-center gap-1">
+                      <Phone className="w-3 h-3" />
+                      Phone Number
+                    </p>
+                    <p className="text-foreground font-semibold">{customer.phone}</p>
+                  </div>
+                )}
               </div>
             </div>
 

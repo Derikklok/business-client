@@ -51,18 +51,24 @@ export const useSearch = (query: string) => {
     customers.forEach((customer) => {
       const matchFields = [
         customer.companyName,
-        customer.contactPerson,
-        customer.email,
+        customer.contactPerson || '',
+        customer.email || '',
         customer.registrationNumber,
         customer.address,
-        customer.phone.toString(),
+        customer.phone ? customer.phone.toString() : '',
       ].join(' ').toLowerCase();
 
       if (matchFields.includes(searchTerm)) {
+        const subtitle = [
+          customer.contactPerson,
+          customer.email,
+          customer.registrationNumber
+        ].filter(Boolean).join(' • ');
+        
         results.push({
           id: `customer-${customer.id}`,
           title: customer.companyName,
-          subtitle: `${customer.contactPerson} • ${customer.email} • ${customer.registrationNumber}`,
+          subtitle: subtitle,
           type: 'customer',
           data: customer,
         });
