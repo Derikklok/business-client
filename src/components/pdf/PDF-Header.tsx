@@ -73,11 +73,11 @@ const PdfHeader = ({ document, profile, customer }: PdfHeaderProps) => {
             <img 
               src={logoUrl} 
               alt={businessName}
-              className="w-24 h-18 object-contain rounded-lg shadow-md print:w-20 print:h-16"
+              className="w-40 h-32 object-contain print:w-36 print:h-28"
             />
           ) : (
-            <div className="w-24 h-18 bg-linear-to-br from-red-600 via-yellow-500 to-orange-600 rounded-lg flex items-center justify-center shadow-md print:w-20 print:h-16">
-              <div className="text-white font-bold text-3xl print:text-2xl">
+            <div className="w-40 h-32 bg-linear-to-br from-red-600 via-yellow-500 to-orange-600 flex items-center justify-center print:w-36 print:h-28">
+              <div className="text-white font-bold text-4xl print:text-3xl">
                 {businessName.split(' ').map(word => word[0]).join('').slice(0, 4)}
               </div>
             </div>
