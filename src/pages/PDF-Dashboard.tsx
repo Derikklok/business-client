@@ -10,6 +10,7 @@ import { ArrowLeft, Printer } from "lucide-react";
 import PdfHeader from "@/components/pdf/PDF-Header";
 import PdfBody from "@/components/pdf/PDF-Body";
 import PdfFooter from "@/components/pdf/PDF-Footer";
+import "../components/pdf/pdf-print.css";
 
 const PdfDashboard = () => {
   const [searchParams] = useSearchParams();
@@ -101,13 +102,15 @@ const PdfDashboard = () => {
       </div>
 
       {/* PDF Document Container */}
-      <Card className="print:shadow-none print:border-0">
+      <Card className="print:shadow-none print:border-0 pdf-container">
         <CardContent className="p-0">
-          {/* A4 Paper-like container */}
-          <div className="bg-white min-h-[297mm] w-full max-w-[210mm] mx-auto p-12 print:p-12">
+          {/* A4 Paper-like container - More compact */}
+          <div className="bg-white min-h-[297mm] w-full max-w-[210mm] mx-auto p-6 print:p-4 print:text-sm print-compact">
             <PdfHeader document={document} profile={profile} customer={customer} />
             <PdfBody document={document} inventory={inventory} />
-            <PdfFooter profile={profile} />
+            <div className="pdf-footer">
+              <PdfFooter profile={profile} />
+            </div>
           </div>
         </CardContent>
       </Card>

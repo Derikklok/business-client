@@ -1,0 +1,113 @@
+/* PDF Print Optimizations */
+@media print {
+  /* Reset margins and ensure full page usage */
+  @page {
+    margin: 0.5in;
+    size: A4;
+  }
+
+  /* Page break handling */
+  .page-break {
+    page-break-before: always;
+  }
+
+  .avoid-break {
+    page-break-inside: avoid;
+  }
+
+  /* Table pagination */
+  table {
+    page-break-inside: auto;
+  }
+
+  tr {
+    page-break-inside: avoid;
+    page-break-after: auto;
+  }
+
+  thead {
+    display: table-header-group;
+  }
+
+  tfoot {
+    display: table-footer-group;
+  }
+
+  /* Ensure thead repeats on each page */
+  thead tr {
+    page-break-inside: avoid;
+    page-break-after: auto;
+  }
+
+  /* Hide elements that shouldn't print */
+  .print-hidden {
+    display: none !important;
+  }
+
+  /* Optimize text for print */
+  body {
+    font-size: 12pt;
+    line-height: 1.3;
+  }
+
+  /* Ensure proper spacing for long tables */
+  .inventory-table {
+    margin-bottom: 20pt;
+  }
+
+  .inventory-table tbody tr:nth-child(10n) {
+    page-break-after: auto;
+  }
+
+  /* Footer positioning */
+  .pdf-footer {
+    page-break-inside: avoid;
+    margin-top: auto;
+  }
+
+  /* Signature section */
+  .signature-section {
+    page-break-inside: avoid;
+    margin-top: 20pt;
+  }
+
+  /* Compact spacing for print */
+  .print-compact {
+    margin: 0;
+    padding: 0;
+  }
+
+  .print-tight {
+    line-height: 1.2;
+  }
+
+  /* Border adjustments for print */
+  .print-border {
+    border-width: 1pt !important;
+  }
+
+  /* Font size adjustments */
+  .print-xs {
+    font-size: 8pt !important;
+  }
+
+  .print-sm {
+    font-size: 10pt !important;
+  }
+
+  .print-base {
+    font-size: 12pt !important;
+  }
+
+  .print-lg {
+    font-size: 14pt !important;
+  }
+}
+
+/* Screen optimizations for PDF preview */
+@media screen {
+  .pdf-container {
+    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+    background: white;
+  }
+}

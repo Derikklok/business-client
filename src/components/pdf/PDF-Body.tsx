@@ -13,57 +13,52 @@ const PdfBody = ({ document, inventory }: PdfBodyProps) => {
   };
 
   return (
-    <div className="mb-8">
+    <div className="mb-4 print:mb-3">
       {/* Business Type */}
-      <div className="border-2 border-gray-300 p-3 mb-4">
+      <div className="border-2 border-gray-300 p-2 mb-2 print:p-1.5 print:mb-1.5">
         <div className="flex items-center gap-4">
-          <span className="font-bold text-base">Business Type</span>
+          <span className="font-bold text-sm print:text-xs">Business Type</span>
           <span>:</span>
-          <span className="text-base">{document.documentTitle || formatDocumentType(document.documentType)}</span>
+          <span className="text-sm print:text-xs">{document.documentTitle || formatDocumentType(document.documentType)}</span>
         </div>
       </div>
 
       {/* Items Table */}
       {inventory && inventory.items.length > 0 ? (
-        <div className="border-2 border-gray-300 overflow-hidden mb-4">
-          <table className="w-full">
-            <thead>
+        <div className="border-2 border-gray-300 overflow-hidden mb-2 avoid-break inventory-table print:mb-1.5">
+          <table className="w-full text-sm print:text-xs print-border">
+            <thead className="print:table-header-group">
               <tr className="bg-black text-white">
-                <th className="text-left p-3 font-semibold">Description</th>
-                <th className="text-right p-3 font-semibold">Unit Price [{inventory.currency}]</th>
-                <th className="text-right p-3 font-semibold">Units</th>
-                <th className="text-right p-3 font-semibold">Value [{inventory.currency}]</th>
+                <th className="text-left p-2 font-semibold print:p-1">Description</th>
+                <th className="text-right p-2 font-semibold print:p-1">Unit Price [{inventory.currency}]</th>
+                <th className="text-right p-2 font-semibold print:p-1">Units</th>
+                <th className="text-right p-2 font-semibold print:p-1">Value [{inventory.currency}]</th>
               </tr>
             </thead>
             <tbody>
               {inventory.items.map((item, index) => (
                 <tr key={item.id || index} className="border-b border-gray-300">
-                  <td className="p-3 text-left">
+                  <td className="p-2 text-left print:p-1">
                     <div className="font-medium">{item.description}</div>
                     {item.notes && (
-                      <div className="text-xs text-gray-600 mt-1">{item.notes}</div>
+                      <div className="text-xs text-gray-600 mt-0.5 print:text-[10px]">{item.notes}</div>
                     )}
                   </td>
-                  <td className="p-3 text-right">
+                  <td className="p-2 text-right print:p-1">
                     {inventory.currency} {item.unitPrice.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
                   </td>
-                  <td className="p-3 text-right">{item.quantity}</td>
-                  <td className="p-3 text-right font-medium">
+                  <td className="p-2 text-right print:p-1">{item.quantity}</td>
+                  <td className="p-2 text-right font-medium print:p-1">
                     {inventory.currency} {item.value.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
                   </td>
                 </tr>
               ))}
 
-              {/* Empty rows for spacing */}
-              <tr className="border-b border-gray-300">
-                <td className="p-3" colSpan={4}>&nbsp;</td>
-              </tr>
-
               {/* Subtotal Row */}
               <tr className="bg-gray-100 border-b border-gray-300">
-                <td className="p-3 text-right font-semibold" colSpan={2}>Sub. Total</td>
-                <td className="p-3"></td>
-                <td className="p-3 text-right font-bold">
+                <td className="p-2 text-right font-semibold print:p-1" colSpan={2}>Sub. Total</td>
+                <td className="p-2 print:p-1"></td>
+                <td className="p-2 text-right font-bold print:p-1">
                   {inventory.currency} {inventory.subtotal.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
                 </td>
               </tr>
@@ -71,9 +66,9 @@ const PdfBody = ({ document, inventory }: PdfBodyProps) => {
               {/* Discount Row */}
               {inventory.discount > 0 && (
                 <tr className="border-b border-gray-300">
-                  <td className="p-3 text-right text-orange-600" colSpan={2}>Discount</td>
-                  <td className="p-3"></td>
-                  <td className="p-3 text-right text-orange-600">
+                  <td className="p-2 text-right text-orange-600 print:p-1" colSpan={2}>Discount</td>
+                  <td className="p-2 print:p-1"></td>
+                  <td className="p-2 text-right text-orange-600 print:p-1">
                     -{inventory.currency} {inventory.discount.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
                   </td>
                 </tr>
@@ -82,9 +77,9 @@ const PdfBody = ({ document, inventory }: PdfBodyProps) => {
               {/* Tax Row */}
               {inventory.tax > 0 && (
                 <tr className="border-b border-gray-300">
-                  <td className="p-3 text-right text-blue-600" colSpan={2}>Tax</td>
-                  <td className="p-3"></td>
-                  <td className="p-3 text-right text-blue-600">
+                  <td className="p-2 text-right text-blue-600 print:p-1" colSpan={2}>Tax</td>
+                  <td className="p-2 print:p-1"></td>
+                  <td className="p-2 text-right text-blue-600 print:p-1">
                     +{inventory.currency} {inventory.tax.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
                   </td>
                 </tr>
@@ -92,9 +87,9 @@ const PdfBody = ({ document, inventory }: PdfBodyProps) => {
 
               {/* Final Value Row */}
               <tr className="bg-gray-50">
-                <td className="p-4 text-right font-bold text-lg" colSpan={2}>Final Value</td>
-                <td className="p-4 text-right font-semibold">{inventory.currency}</td>
-                <td className="p-4 text-right font-bold text-lg text-primary">
+                <td className="p-3 text-right font-bold text-base print:p-2 print:text-sm" colSpan={2}>Final Value</td>
+                <td className="p-3 text-right font-semibold print:p-2">{inventory.currency}</td>
+                <td className="p-3 text-right font-bold text-base text-primary print:p-2 print:text-sm">
                   {inventory.currency} {inventory.finalTotal.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
                 </td>
               </tr>
@@ -102,32 +97,32 @@ const PdfBody = ({ document, inventory }: PdfBodyProps) => {
               {/* Payment Option Row */}
               {inventory.paymentOption && (
                 <tr className="bg-black text-white">
-                  <td className="p-3 font-semibold">Payment Option</td>
-                  <td className="p-3 text-right font-semibold" colSpan={3}>{inventory.paymentOption}</td>
+                  <td className="p-2 font-semibold print:p-1">Payment Option</td>
+                  <td className="p-2 text-right font-semibold print:p-1" colSpan={3}>{inventory.paymentOption}</td>
                 </tr>
               )}
             </tbody>
           </table>
         </div>
       ) : (
-        <div className="border-2 border-gray-300 p-8 text-center text-gray-500 mb-4">
+        <div className="border-2 border-gray-300 p-4 text-center text-gray-500 mb-2 print:p-3 print:mb-1.5">
           No inventory items available for this document
         </div>
       )}
 
       {/* Special Notes */}
       {document.specialNotes && (
-        <div className="border-2 border-gray-300 p-4 mb-4">
-          <h3 className="font-semibold text-sm mb-2">Special Notes:</h3>
-          <p className="text-sm text-gray-700 whitespace-pre-wrap">{document.specialNotes}</p>
+        <div className="border-2 border-gray-300 p-2 mb-2 avoid-break print:p-1.5 print:mb-1.5">
+          <h3 className="font-semibold text-sm mb-1 print:text-xs print:mb-0.5">Special Notes:</h3>
+          <p className="text-sm text-gray-700 whitespace-pre-wrap print:text-xs">{document.specialNotes}</p>
         </div>
       )}
 
       {/* Terms and Conditions */}
       {document.termsAndConditions && (
-        <div className="border-2 border-gray-300 p-4 mb-4">
-          <h3 className="font-semibold text-sm mb-2">Terms and Conditions:</h3>
-          <p className="text-sm text-gray-700 whitespace-pre-wrap">{document.termsAndConditions}</p>
+        <div className="border-2 border-gray-300 p-2 mb-2 avoid-break print:p-1.5 print:mb-1.5">
+          <h3 className="font-semibold text-sm mb-1 print:text-xs print:mb-0.5">Terms and Conditions:</h3>
+          <p className="text-sm text-gray-700 whitespace-pre-wrap print:text-xs">{document.termsAndConditions}</p>
         </div>
       )}
     </div>

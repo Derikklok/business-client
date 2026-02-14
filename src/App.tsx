@@ -31,8 +31,17 @@ const App = () => {
         <Route path="documents" element={<Documentstab />} />
         <Route path="profile" element={<ProfileTab />} />
         <Route path="inventory" element={<Inventory />} />
-        <Route path="pdf" element={<PdfDashboard />} />
       </Route>
+
+      {/* Standalone PDF Route - No Dashboard Layout */}
+      <Route
+        path="/pdf"
+        element={
+          <ProtectedRoute>
+            <PdfDashboard />
+          </ProtectedRoute>
+        }
+      />
 
       {/* 404 Not Found */}
       <Route path="*" element={<NotFound />} />

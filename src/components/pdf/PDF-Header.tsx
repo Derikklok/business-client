@@ -34,15 +34,15 @@ const PdfHeader = ({ document, profile, customer }: PdfHeaderProps) => {
   const regNumber = profile?.registrationNumber || document.id;
 
   return (
-    <div className="mb-8">
+    <div className="mb-4 print:mb-3">
       {/* Company Header */}
-      <div className="flex items-start justify-between mb-6 pb-4 border-b-2 border-gray-300">
+      <div className="flex items-start justify-between mb-3 pb-2 border-b-2 border-gray-300 print:mb-2 print:pb-1">
         {/* Company Info */}
         <div className="flex-1">
-          <h1 className="text-2xl font-bold text-gray-900 mb-3">
+          <h1 className="text-xl font-bold text-gray-900 mb-2 print:text-lg print:mb-1">
             {businessName}
           </h1>
-          <div className="space-y-1 text-sm text-gray-700">
+          <div className="space-y-0.5 text-sm text-gray-700 print:text-xs">
             <p>{address}</p>
             <div className="flex items-center gap-2">
               <span className="font-semibold">Email</span>
@@ -68,16 +68,16 @@ const PdfHeader = ({ document, profile, customer }: PdfHeaderProps) => {
         </div>
 
         {/* Logo */}
-        <div className="shrink-0 ml-6">
+        <div className="shrink-0 ml-4">
           {logoUrl ? (
             <img 
               src={logoUrl} 
               alt={businessName}
-              className="w-32 h-24 object-contain rounded-lg shadow-md"
+              className="w-24 h-18 object-contain rounded-lg shadow-md print:w-20 print:h-16"
             />
           ) : (
-            <div className="w-32 h-24 bg-linear-to-br from-red-600 via-yellow-500 to-orange-600 rounded-lg flex items-center justify-center shadow-md">
-              <div className="text-white font-bold text-4xl">
+            <div className="w-24 h-18 bg-linear-to-br from-red-600 via-yellow-500 to-orange-600 rounded-lg flex items-center justify-center shadow-md print:w-20 print:h-16">
+              <div className="text-white font-bold text-3xl print:text-2xl">
                 {businessName.split(' ').map(word => word[0]).join('').slice(0, 4)}
               </div>
             </div>
@@ -86,22 +86,22 @@ const PdfHeader = ({ document, profile, customer }: PdfHeaderProps) => {
       </div>
 
       {/* Document & Customer Info Row */}
-      <div className="grid grid-cols-2 gap-6 mb-6">
+      <div className="grid grid-cols-2 gap-4 mb-3 print:gap-3 print:mb-2">
         {/* Document Details */}
-        <div className="border-2 border-gray-300 p-4">
-          <div className="space-y-2 text-sm">
+        <div className="border-2 border-gray-300 p-2 print:p-1.5">
+          <div className="space-y-1 text-sm print:text-xs print:space-y-0.5">
             <div className="flex items-start">
-              <span className="w-32 font-semibold">Reg No</span>
+              <span className="w-24 font-semibold">Reg No</span>
               <span className="mr-2">:</span>
               <span>{regNumber}</span>
             </div>
             <div className="flex items-start">
-              <span className="w-32 font-semibold">{getDocumentTitle(document.documentType)} No</span>
+              <span className="w-24 font-semibold">{getDocumentTitle(document.documentType)} No</span>
               <span className="mr-2">:</span>
               <span>{document.documentNo}</span>
             </div>
             <div className="flex items-start">
-              <span className="w-32 font-semibold">Date</span>
+              <span className="w-24 font-semibold">Date</span>
               <span className="mr-2">:</span>
               <span>{new Date(document.mentionedDate).toLocaleDateString('en-GB', {
                 day: 'numeric',
@@ -110,7 +110,7 @@ const PdfHeader = ({ document, profile, customer }: PdfHeaderProps) => {
               })}</span>
             </div>
             <div className="flex items-start">
-              <span className="w-32 font-semibold">Customer No</span>
+              <span className="w-24 font-semibold">Customer No</span>
               <span className="mr-2">:</span>
               <span>{customer?.registrationNumber || document.customerId}</span>
             </div>
@@ -118,12 +118,12 @@ const PdfHeader = ({ document, profile, customer }: PdfHeaderProps) => {
         </div>
 
         {/* Customer Details */}
-        <div className="border-2 border-gray-300 p-4">
-          <div className="space-y-2 text-sm">
-            <p className="font-bold text-base">{customer?.companyName || document.customerName}</p>
+        <div className="border-2 border-gray-300 p-2 print:p-1.5">
+          <div className="space-y-1 text-sm print:text-xs print:space-y-0.5">
+            <p className="font-bold text-sm print:text-xs">{customer?.companyName || document.customerName}</p>
             {customer && (
               <>
-                <div className="space-y-1 text-gray-700">
+                <div className="space-y-0.5 text-gray-700">
                   <p><span className="font-medium">Address:</span> {customer.address}</p>
                   <p><span className="font-medium">Contact:</span> {customer.contactPerson}</p>
                   <p><span className="font-medium">Email:</span> {customer.email}</p>
@@ -139,8 +139,8 @@ const PdfHeader = ({ document, profile, customer }: PdfHeaderProps) => {
       </div>
 
       {/* Document Title */}
-      <div className="text-right mb-4">
-        <h2 className="text-3xl font-bold text-gray-900">{getDocumentTitle(document.documentType)}</h2>
+      <div className="text-right mb-2 print:mb-1">
+        <h2 className="text-2xl font-bold text-gray-900 print:text-xl">{getDocumentTitle(document.documentType)}</h2>
       </div>
     </div>
   );

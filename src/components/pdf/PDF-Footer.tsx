@@ -12,24 +12,24 @@ const PdfFooter = ({ profile }: PdfFooterProps) => {
   const contacts = profile?.contactNumbers || ["0755264100", "0777658778"];
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-3 print:space-y-2">
       {/* Thank You Section */}
-      <div className="border-2 border-gray-300 p-6 text-center">
-        <p className="text-2xl font-bold text-gray-800">Thank You</p>
-        <p className="text-sm text-gray-600 mt-2">For Your Business</p>
+      <div className="border-2 border-gray-300 p-3 text-center print:p-2">
+        <p className="text-xl font-bold text-gray-800 print:text-lg">Thank You</p>
+        <p className="text-sm text-gray-600 mt-1 print:text-xs print:mt-0.5">For Your Business</p>
       </div>
 
       {/* Signature Section */}
-      <div className="flex justify-end">
-        <div className="border-2 border-gray-300 p-6 w-80">
-          <div className="space-y-3">
-            <div className="pb-2 border-b border-gray-300">
-              <p className="text-sm text-gray-600">Authorized Signature</p>
+      <div className="flex justify-end signature-section">
+        <div className="border-2 border-gray-300 p-3 w-72 print:p-2 print:w-64 print-border">
+          <div className="space-y-2 print:space-y-1 print:text-xs">
+            <div className="pb-1 border-b border-gray-300 print:pb-0.5">
+              <p className="text-sm text-gray-600 print:text-xs">Authorized Signature</p>
             </div>
-            <div className="pt-4 space-y-1">
-              <p className="font-bold text-base">Sachin Pasindu</p>
-              <p className="text-sm text-gray-700">Operations Executive</p>
-              <p className="text-xs text-gray-600 font-medium">
+            <div className="pt-2 space-y-0.5 print:pt-1 print:space-y-0">
+              <p className="font-bold text-sm print:text-xs">Sachin Pasindu</p>
+              <p className="text-sm text-gray-700 print:text-xs">Operations Executive</p>
+              <p className="text-xs text-gray-600 font-medium print:text-[10px]">
                 {businessName}
               </p>
             </div>
@@ -38,9 +38,9 @@ const PdfFooter = ({ profile }: PdfFooterProps) => {
       </div>
 
       {/* Footer Note */}
-      <div className="text-center text-xs text-gray-500 pt-4 border-t border-gray-200">
+      <div className="text-center text-xs text-gray-500 pt-2 border-t border-gray-200 print:pt-1 print:text-[10px]">
         <p>For inquiries, contact us at: {emails} | {contacts.join(" / ")}</p>
-        <p className="mt-1">{address}</p>
+        <p className="mt-0.5">{address}</p>
       </div>
     </div>
   );

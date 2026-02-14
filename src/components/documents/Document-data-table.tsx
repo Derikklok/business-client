@@ -66,7 +66,7 @@ const DocumentDataTable = ({ documents, isLoading }: DocumentDataTableProps) => 
   };
 
   const handleGoToPdf = (documentId: string) => {
-    navigate(`/dashboard/pdf?documentId=${documentId}`);
+    navigate(`/pdf?documentId=${documentId}`);
   };
   const formatDate = (dateString: string) => {
     return new Date(dateString).toLocaleDateString('en-US', {
