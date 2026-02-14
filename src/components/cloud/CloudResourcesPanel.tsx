@@ -75,16 +75,16 @@ const CloudResourcesPanel = () => {
         </Button>
       </DialogTrigger>
       
-      <DialogContent className="flex flex-col max-w-5xl w-[90vw] max-h-[90vh] overflow-y-auto p-0 gap-0 rounded-lg">
+      <DialogContent className="flex flex-col max-w-5xl w-[95vw] sm:w-[90vw] max-h-[95vh] sm:max-h-[90vh] overflow-y-auto p-0 gap-0 rounded-lg">
         {/* Header with Gradient Background */}
-        <div className="bg-linear-to-r from-primary/10 to-primary/5 px-8 py-6 border-b border-primary/10 shrink-0 sticky top-0 z-10">
+        <div className="bg-linear-to-r from-primary/10 to-primary/5 px-4 sm:px-8 py-4 sm:py-6 border-b border-primary/10 shrink-0 sticky top-0 z-10">
           <DialogHeader>
             <div className="flex items-start gap-3">
               <div className="p-2.5 bg-primary/15 rounded-lg">
                 <Cloud className="w-6 h-6 text-primary" />
               </div>
               <div className="flex-1">
-                <DialogTitle className="text-3xl font-bold text-foreground mb-2">
+                <DialogTitle className="text-xl sm:text-3xl font-bold text-foreground mb-2">
                   Cloud Resources
                 </DialogTitle>
                 <DialogDescription className="text-sm">
@@ -105,7 +105,7 @@ const CloudResourcesPanel = () => {
 
         {/* Content Sections */}
         <div className="flex-1 overflow-y-auto">
-          <div className="space-y-6 px-8 py-6">
+          <div className="space-y-4 sm:space-y-6 px-4 sm:px-8 py-4 sm:py-6">
             
             {/* Current Status Section */}
             <div className="space-y-4">
@@ -113,7 +113,7 @@ const CloudResourcesPanel = () => {
                 <Settings className="w-4 h-4 text-primary" />
                 Current Status
               </h3>
-              <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3 sm:gap-4">
                 {statusItems.map((item, index) => (
                   <div key={index} className="p-4 bg-muted/30 rounded-lg border border-border/50 hover:border-primary/30 transition-colors">
                     <div className="flex items-center gap-2 text-xs font-medium text-muted-foreground mb-2">
@@ -162,7 +162,7 @@ const CloudResourcesPanel = () => {
                 <Gift className="w-4 h-4 text-primary" />
                 Upcoming Features
               </h3>
-              <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3 sm:gap-4">
                 {features.map((feature, index) => (
                   <div key={index} className="p-6 bg-muted/30 rounded-lg border border-border/50 hover:border-primary/30 transition-all duration-200">
                     <div className="flex items-start gap-4 mb-4">
@@ -195,7 +195,7 @@ const CloudResourcesPanel = () => {
                 <Shield className="w-4 h-4 text-primary" />
                 Benefits
               </h3>
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-4">
                 <div className="p-4 bg-muted/30 rounded-lg border border-border/50 hover:border-primary/30 transition-colors">
                   <div className="flex items-center gap-2 text-xs font-medium text-muted-foreground mb-2">
                     <Shield className="w-3 h-3" />
@@ -233,16 +233,16 @@ const CloudResourcesPanel = () => {
         </div>
 
         {/* Action Buttons - Sticky Footer */}
-        <div className="flex gap-3 justify-end px-8 py-4 border-t border-border bg-muted/30 shrink-0 sticky bottom-0 z-10">
+        <div className="flex flex-col sm:flex-row gap-3 justify-end px-4 sm:px-8 py-4 border-t border-border bg-muted/30 shrink-0 sticky bottom-0 z-10">
           <Button 
             variant="outline" 
             onClick={() => setIsOpen(false)}
-            className="min-w-24"
+            className="min-w-24 w-full sm:w-auto"
           >
             Close
           </Button>
           <Button 
-            className="gap-2 bg-linear-to-r from-blue-500 to-purple-600 hover:from-blue-600 hover:to-purple-700 text-white border-0 min-w-32"
+            className="gap-2 bg-linear-to-r from-blue-500 to-purple-600 hover:from-blue-600 hover:to-purple-700 text-white border-0 min-w-32 w-full sm:w-auto"
             disabled
           >
             <Cloud className="w-4 h-4" />

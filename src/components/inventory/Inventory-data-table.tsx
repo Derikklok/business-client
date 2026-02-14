@@ -87,7 +87,7 @@ const InventoryDataTable = ({ items, isLoading }: InventoryDataTableProps) => {
         <CardContent className="flex flex-col items-center justify-center py-12">
           <Package className="w-12 h-12 text-muted-foreground mb-4" />
           <h3 className="text-lg font-semibold mb-2">No items in inventory</h3>
-          <p className="text-muted-foreground text-sm">
+          <p className="text-muted-foreground text-sm text-center">
             Edit the inventory to add items
           </p>
         </CardContent>
@@ -98,7 +98,7 @@ const InventoryDataTable = ({ items, isLoading }: InventoryDataTableProps) => {
   return (
     <Card>
       <CardContent className="p-0">
-        <div className="overflow-x-auto">
+        <div className="overflow-x-auto -mx-4 sm:mx-0">
           <Table>
             <TableHeader>
               <TableRow>

@@ -118,16 +118,16 @@ const DocumentDetailsModal = ({ documentId, open, onClose }: DocumentDetailsModa
 
   return (
     <Dialog open={open} onOpenChange={onClose}>
-      <DialogContent className="flex! flex-col! max-w-6xl! w-[95vw]! max-h-[95vh]! overflow-y-auto! p-0! gap-0! rounded-lg!">
+      <DialogContent className="flex! flex-col! max-w-6xl! w-[98vw]! sm:w-[95vw]! max-h-[98vh]! sm:max-h-[95vh]! overflow-y-auto! p-0! gap-0! rounded-lg!">
         {/* Header with Gradient Background */}
-        <div className="bg-linear-to-r from-primary/10 to-primary/5 px-8 py-6 border-b border-primary/10 shrink-0 sticky top-0 z-10">
+        <div className="bg-linear-to-r from-primary/10 to-primary/5 px-4 sm:px-8 py-4 sm:py-6 border-b border-primary/10 shrink-0 sticky top-0 z-10">
           <DialogHeader>
             <div className="flex items-start gap-3">
               <div className="p-2.5 bg-primary/15 rounded-lg">
                 <FileText className="w-6 h-6 text-primary" />
               </div>
               <div className="flex-1">
-                <DialogTitle className="text-3xl font-bold text-foreground mb-2">
+                <DialogTitle className="text-xl sm:text-2xl md:text-3xl font-bold text-foreground mb-2">
                   {document.documentNo}
                 </DialogTitle>
                 <DialogDescription className="text-sm">
@@ -148,7 +148,7 @@ const DocumentDetailsModal = ({ documentId, open, onClose }: DocumentDetailsModa
 
         {/* Content Sections */}
         <div className="flex-1 overflow-y-auto">
-          <div className="space-y-6 px-8 py-6">
+          <div className="space-y-4 sm:space-y-6 px-4 sm:px-8 py-4 sm:py-6">
             
             {/* Basic Information Section */}
             <div className="space-y-4">
@@ -156,7 +156,7 @@ const DocumentDetailsModal = ({ documentId, open, onClose }: DocumentDetailsModa
                 <FileCheck className="w-4 h-4 text-primary" />
                 Basic Information
               </h3>
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-4">
                 {/* Document Title */}
                 <div className="p-4 bg-muted/30 rounded-lg border border-border/50 hover:border-primary/30 transition-colors">
                   <div className="flex items-center gap-2 text-xs font-medium text-muted-foreground mb-1">
@@ -186,7 +186,7 @@ const DocumentDetailsModal = ({ documentId, open, onClose }: DocumentDetailsModa
                 <Building2 className="w-4 h-4 text-primary" />
                 Customer Information
               </h3>
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-4">
                 {/* Customer Name */}
                 <div className="p-4 bg-muted/30 rounded-lg border border-border/50 hover:border-primary/30 transition-colors">
                   <div className="flex items-center gap-2 text-xs font-medium text-muted-foreground mb-1">
@@ -361,16 +361,16 @@ const DocumentDetailsModal = ({ documentId, open, onClose }: DocumentDetailsModa
         </div>
 
         {/* Action Buttons - Sticky Footer */}
-        <div className="flex gap-3 justify-end px-8 py-4 border-t border-border bg-muted/30 shrink-0 sticky bottom-0 z-10">
+        <div className="flex flex-col sm:flex-row gap-3 justify-end px-4 sm:px-8 py-4 border-t border-border bg-muted/30 shrink-0 sticky bottom-0 z-10">
           <Button 
             variant="outline" 
             onClick={onClose}
-            className="min-w-24"
+            className="min-w-24 w-full sm:w-auto"
           >
             Close
           </Button>
           <Button 
-            className="gap-2 bg-primary hover:bg-primary/90 min-w-32"
+            className="gap-2 bg-primary hover:bg-primary/90 min-w-32 w-full sm:w-auto"
             onClick={() => setEditModalOpen(true)}
           >
             <Edit3 className="w-4 h-4" />

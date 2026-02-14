@@ -61,7 +61,7 @@ const NotificationDropdown = () => {
         variant="outline" 
         size="sm" 
         onClick={() => setIsOpen(!isOpen)}
-        className="gap-2 bg-white/10 border-white/30 text-white hover:bg-white/20 transition-colors relative"
+        className="gap-1 sm:gap-2 bg-white/10 border-white/30 text-white hover:bg-white/20 transition-colors relative"
       >
         <Bell className="w-4 h-4" />
         <span className="hidden sm:inline">Notifications</span>
@@ -74,9 +74,9 @@ const NotificationDropdown = () => {
 
       {/* Notification Dropdown */}
       {isOpen && (
-        <div className="absolute top-full right-0 mt-2 w-80 bg-white rounded-lg shadow-xl border border-gray-200 z-50 max-h-96 overflow-hidden">
+        <div className="absolute top-full right-0 mt-2 w-80 sm:w-96 bg-white rounded-lg shadow-xl border border-gray-200 z-50 max-h-[70vh] sm:max-h-96 overflow-hidden">
           {/* Header */}
-          <div className="flex items-center justify-between px-4 py-3 border-b border-gray-200">
+          <div className="flex items-center justify-between px-3 sm:px-4 py-3 border-b border-gray-200">
             <h3 className="font-semibold text-gray-900">Notifications</h3>
             {unreadCount > 0 && (
               <Button
@@ -92,7 +92,7 @@ const NotificationDropdown = () => {
           </div>
 
           {/* Notifications List */}
-          <div className="max-h-80 overflow-y-auto">
+          <div className="max-h-[60vh] sm:max-h-80 overflow-y-auto">
             {notifications.length === 0 ? (
               <div className="flex flex-col items-center justify-center py-8 px-4">
                 <Bell className="w-8 h-8 text-gray-300 mb-2" />

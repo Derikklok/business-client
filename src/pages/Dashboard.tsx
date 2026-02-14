@@ -38,21 +38,23 @@ export default function Dashboard() {
   return (
     <div className="min-h-screen bg-background">
       <div className="bg-linear-to-r from-primary to-primary/90 text-primary-foreground border-b border-primary/30 backdrop-blur-md sticky top-0 z-50 shadow-lg">
-        <div className="max-w-7xl mx-auto px-6 py-6">
-          <div className="flex items-center justify-between gap-6">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 py-4 sm:py-6">
+          <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 sm:gap-6">
             {/* Left: Logo and Title */}
-            <div className="flex items-center gap-3">
-              <div className="bg-white/20 backdrop-blur-sm p-2.5 rounded-lg border border-white/30">
-                <Building2 className="w-6 h-6 text-white" />
+            <div className="flex items-center gap-2 sm:gap-3">
+              <div className="bg-white/20 backdrop-blur-sm p-2 sm:p-2.5 rounded-lg border border-white/30">
+                <Building2 className="w-5 h-5 sm:w-6 sm:h-6 text-white" />
               </div>
               <div>
-                <h1 className="text-3xl font-bold text-white">Management Centre</h1>
-                <p className="text-sm text-white/70 mt-1">Welcome back, {user.name}</p>
+                <h1 className="text-xl sm:text-2xl md:text-3xl font-bold text-white">Management Centre</h1>
+                <p className="text-xs sm:text-sm text-white/70 mt-1">Welcome back, {user.name}</p>
               </div>
             </div>
 
             {/* Center: Search Bar */}
-            <SearchBar />
+            <div className="order-3 sm:order-2 w-full sm:w-auto flex-1 max-w-none sm:max-w-xs lg:max-w-md xl:max-w-lg">
+              <SearchBar />
+            </div>
 
             {/* Right: Action Buttons */}
             <div className="flex items-center gap-3">
@@ -78,13 +80,13 @@ export default function Dashboard() {
       </div>
 
       {/* Main Content */}
-      <div className="max-w-7xl mx-auto px-6 py-8">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 py-6 sm:py-8">
         {/* Navigation Tabs */}
         <div className="flex gap-2 mb-6 border-b border-border">
           <NavLink
             to="/dashboard/customers"
             className={({ isActive }) =>
-              `inline-flex items-center gap-2 px-4 py-3 text-sm font-medium transition-colors border-b-2 ${
+              `inline-flex items-center gap-2 px-3 sm:px-4 py-3 text-sm font-medium transition-colors border-b-2 min-h-12 ${
                 isActive
                   ? "border-primary text-primary"
                   : "border-transparent text-muted-foreground hover:text-foreground hover:border-muted-foreground/50"
@@ -98,7 +100,7 @@ export default function Dashboard() {
           <NavLink
             to="/dashboard/documents"
             className={({ isActive }) =>
-              `inline-flex items-center gap-2 px-4 py-3 text-sm font-medium transition-colors border-b-2 ${
+              `inline-flex items-center gap-2 px-3 sm:px-4 py-3 text-sm font-medium transition-colors border-b-2 min-h-12 ${
                 isActive
                   ? "border-primary text-primary"
                   : "border-transparent text-muted-foreground hover:text-foreground hover:border-muted-foreground/50"
@@ -112,7 +114,7 @@ export default function Dashboard() {
           <NavLink
             to="/dashboard/profile"
             className={({ isActive }) =>
-              `inline-flex items-center gap-2 px-4 py-3 text-sm font-medium transition-colors border-b-2 ${
+              `inline-flex items-center gap-2 px-3 sm:px-4 py-3 text-sm font-medium transition-colors border-b-2 min-h-12 ${
                 isActive
                   ? "border-primary text-primary"
                   : "border-transparent text-muted-foreground hover:text-foreground hover:border-muted-foreground/50"

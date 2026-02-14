@@ -83,18 +83,18 @@ const PdfDashboard = () => {
   return (
     <div className="space-y-6">
       {/* Action Buttons - Hidden when printing */}
-      <div className="flex items-center gap-3 print:hidden">
+      <div className="flex flex-col sm:flex-row items-start sm:items-center gap-2 sm:gap-3 print:hidden">
         <Button 
           onClick={() => navigate("/dashboard/documents")} 
           variant="outline"
           size="sm"
         >
-          <ArrowLeft className="w-4 h-4 mr-2" />
+          <ArrowLeft className="w-4 h-4 mr-1 sm:mr-2" />
           Back
         </Button>
         <Button 
           onClick={handlePrint}
-          className="gap-2"
+          className="gap-1 sm:gap-2 w-full sm:w-auto"
         >
           <Printer className="w-4 h-4" />
           Print
