@@ -2,13 +2,33 @@
 import { Button } from "@/components/ui/button";
 import { Plus, Search, Users } from "lucide-react";
 import { Input } from "@/components/ui/input";
-import { useState } from "react";
+import { useState, useEffect } from "react";
+import { useSearchParams } from "react-router-dom";
 import CustomerDataTable from "@/components/customers/Customer-data-table";
 import CreateCustomerModel from "@/components/customers/Create-customer-model";
 
 const Customertab = () => {
+  const [searchParams, setSearchParams] = useSearchParams();
   const [searchQuery, setSearchQuery] = useState("");
   const [createModalOpen, setCreateModalOpen] = useState(false);
+  const [highlightCustomerId, setHighlightCustomerId] = useState<string | null>(null);
+
+  // Handle highlight parameter from URL
+  useEffect(() => {
+    const highlight = searchParams.get("highlight");
+    if (highlight) {
+      setHighlightCustomerId(highlight);
+      // Remove highlight parameter after setting it
+      const newSearchParams = new URLSearchParams(searchParams);
+      newSearchParams.delete("highlight");
+      setSearchParams(newSearchParams, { replace: true });
+      
+      // Clear highlight after 3 seconds
+      setTimeout(() => {
+        setHighlightCustomerId(null);
+      }, 3000);
+    }
+  }, [searchParams, setSearchParams]);
 
   return (
     <div className="space-y-6">
@@ -50,7 +70,10 @@ const Customertab = () => {
       </div>
 
       {/* Customer Data Table */}
-      <CustomerDataTable />
+      <CustomerDataTable 
+        searchQuery={searchQuery}
+        highlightCustomerId={highlightCustomerId}
+      />
 
       {/* Create Customer Sheet */}
       <CreateCustomerModel

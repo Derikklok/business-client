@@ -1,5 +1,5 @@
 
-import { useState } from "react";
+import { useState, useMemo } from "react";
 import {
   Table,
   TableBody,
@@ -19,13 +19,19 @@ import {
   AlertDialogTitle,
 } from "@/components/ui/alert-dialog";
 import { useCustomers, useDeleteCustomer } from "@/hooks/useCustomers";
-import { Loader2, Edit2, Trash2, Eye, AlertCircle } from "lucide-react";
+import { Loader2, Edit2, Trash2, Eye, AlertCircle, Users } from "lucide-react";
 import { toast } from "sonner";
+import { cn } from "@/lib/utils";
 import type { Customer } from "@/types/customer.types";
 import CustomerDetailsModel from "./Customer-details-model";
 import EditCustomerModel from "./Edit-Customer-model";
 
-const CustomerDataTable = () => {
+interface CustomerDataTableProps {
+  searchQuery?: string;
+  highlightCustomerId?: string | null;
+}
+
+const CustomerDataTable = ({ searchQuery = "", highlightCustomerId }: CustomerDataTableProps) => {
   const { data: customers = [], isLoading, error } = useCustomers();
   const deleteCustomer = useDeleteCustomer();
   const [selectedCustomer, setSelectedCustomer] = useState<Customer | null>(null);
@@ -63,6 +69,25 @@ const CustomerDataTable = () => {
       console.error(error);
     }
   };
+
+  // Filter customers based on search query
+  const filteredCustomers = useMemo(() => {
+    if (!searchQuery.trim()) return customers;
+    
+    const query = searchQuery.toLowerCase().trim();
+    return customers.filter((customer) => {
+      const searchFields = [
+        customer.companyName,
+        customer.contactPerson,
+        customer.email,
+        customer.registrationNumber,
+        customer.address,
+        customer.phone.toString(),
+      ].join(' ').toLowerCase();
+      
+      return searchFields.includes(query);
+    });
+  }, [customers, searchQuery]);
 
   if (isLoading) {
     return (
@@ -122,45 +147,69 @@ const CustomerDataTable = () => {
                 </TableRow>
               </TableHeader>
               <TableBody>
-                {customers.map((customer) => (
-                  <TableRow key={customer.id}>
-                    <TableCell className="font-medium text-sm">{customer.registrationNumber}</TableCell>
-                    <TableCell className="font-medium">{customer.companyName}</TableCell>
-                    <TableCell>{customer.contactPerson}</TableCell>
-                    <TableCell>{customer.email}</TableCell>
-                    <TableCell>{customer.phone}</TableCell>
-                    <TableCell className="max-w-xs truncate">{customer.address}</TableCell>
-                    <TableCell className="text-right space-x-2">
-                      <Button
-                        variant="ghost"
-                        size="sm"
-                        onClick={() => handleViewCustomer(customer)}
-                        className="gap-2"
-                      >
-                        <Eye className="w-4 h-4" />
-                        <span className="hidden sm:inline">View</span>
-                      </Button>
-                      <Button
-                        variant="ghost"
-                        size="sm"
-                        onClick={() => handleEditCustomer(customer)}
-                        className="gap-2"
-                      >
-                        <Edit2 className="w-4 h-4" />
-                        <span className="hidden sm:inline">Edit</span>
-                      </Button>
-                      <Button
-                        variant="ghost"
-                        size="sm"
-                        onClick={() => handleDeleteCustomer(customer)}
-                        className="gap-2 text-destructive hover:text-destructive"
-                      >
-                        <Trash2 className="w-4 h-4" />
-                        <span className="hidden sm:inline">Delete</span>
-                      </Button>
+                {filteredCustomers.length === 0 ? (
+                  <TableRow>
+                    <TableCell colSpan={7} className="h-24 text-center">
+                      <div className="flex flex-col items-center gap-2 text-muted-foreground">
+                        <Users className="w-8 h-8" />
+                        <p className="text-sm font-medium">
+                          {searchQuery ? "No customers found matching your search" : "No customers found"}
+                        </p>
+                        {searchQuery && (
+                          <p className="text-xs">
+                            Try adjusting your search terms
+                          </p>
+                        )}
+                      </div>
                     </TableCell>
                   </TableRow>
-                ))}
+                ) : (
+                  filteredCustomers.map((customer) => (
+                    <TableRow 
+                      key={customer.id}
+                      className={cn(
+                        "transition-colors",
+                        highlightCustomerId === customer.id && "bg-yellow-50 border-yellow-200 animate-pulse"
+                      )}
+                    >
+                      <TableCell className="font-medium text-sm">{customer.registrationNumber}</TableCell>
+                      <TableCell className="font-medium">{customer.companyName}</TableCell>
+                      <TableCell>{customer.contactPerson}</TableCell>
+                      <TableCell>{customer.email}</TableCell>
+                      <TableCell>{customer.phone}</TableCell>
+                      <TableCell className="max-w-xs truncate">{customer.address}</TableCell>
+                      <TableCell className="text-right space-x-2">
+                        <Button
+                          variant="ghost"
+                          size="sm"
+                          onClick={() => handleViewCustomer(customer)}
+                          className="gap-2"
+                        >
+                          <Eye className="w-4 h-4" />
+                          <span className="hidden sm:inline">View</span>
+                        </Button>
+                        <Button
+                          variant="ghost"
+                          size="sm"
+                          onClick={() => handleEditCustomer(customer)}
+                          className="gap-2"
+                        >
+                          <Edit2 className="w-4 h-4" />
+                          <span className="hidden sm:inline">Edit</span>
+                        </Button>
+                        <Button
+                          variant="ghost"
+                          size="sm"
+                          onClick={() => handleDeleteCustomer(customer)}
+                          className="gap-2 text-destructive hover:text-destructive"
+                        >
+                          <Trash2 className="w-4 h-4" />
+                          <span className="hidden sm:inline">Delete</span>
+                        </Button>
+                      </TableCell>
+                    </TableRow>
+                  ))
+                )}
               </TableBody>
             </Table>
           </div>
