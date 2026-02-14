@@ -1,11 +1,10 @@
-
 import { useSearchParams, useNavigate } from "react-router-dom";
 import { useDocument } from "@/hooks/useDocuments";
-import { useInventoryItems } from "@/hooks/useInventory";
+import { useInventory } from "@/hooks/useInventory";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
-import { ArrowLeft, Package, Plus, FileText } from "lucide-react";
+import { ArrowLeft, Package, Plus, FileText, Edit } from "lucide-react";
 import { useState } from "react";
 import InventoryDataTable from "@/components/inventory/Inventory-data-table";
 import CreateInventoryItemModal from "@/components/inventory/Create-inventory-item-modal";
@@ -16,9 +15,9 @@ const Inventory = () => {
   const documentId = searchParams.get("documentId");
   
   const { data: document, isLoading: isLoadingDoc, error: docError } = useDocument(documentId || "");
-  const { data: inventoryItems = [], isLoading: isLoadingItems } = useInventoryItems(documentId || "");
+  const { data: inventory, isLoading: isLoadingInventory } = useInventory(documentId || "");
   
-  const [createModalOpen, setCreateModalOpen] = useState(false);
+  const [modalOpen, setModalOpen] = useState(false);
 
   const formatDate = (dateString: string) => {
     return new Date(dateString).toLocaleDateString('en-US', {
@@ -29,7 +28,7 @@ const Inventory = () => {
   };
 
   const formatDocumentType = (type: string) => {
-    return type.replace(/_/g, ' ').replace(/\\b\\w/g, l => l.toUpperCase());
+    return type.replace(/_/g, ' ').replace(/\b\w/g, l => l.toUpperCase());
   };
 
   const getDocumentTypeColor = (type: string) => {
@@ -47,8 +46,10 @@ const Inventory = () => {
     }
   };
 
-  const calculateTotal = () => {
-    return inventoryItems.reduce((sum, item) => sum + item.totalPrice, 0);
+  const getStatusColor = (status: string) => {
+    return status === "finalized" 
+      ? "bg-green-100 text-green-700" 
+      : "bg-yellow-100 text-yellow-700";
   };
 
   if (!documentId) {
@@ -142,10 +143,19 @@ const Inventory = () => {
             </div>
             <Button 
               className="gap-2"
-              onClick={() => setCreateModalOpen(true)}
+              onClick={() => setModalOpen(true)}
             >
-              <Plus className="w-4 h-4" />
-              Add Item
+              {inventory ? (
+                <>
+                  <Edit className="w-4 h-4" />
+                  Edit Inventory
+                </>
+              ) : (
+                <>
+                  <Plus className="w-4 h-4" />
+                  Create Inventory
+                </>
+              )}
             </Button>
           </div>
 
@@ -179,33 +189,114 @@ const Inventory = () => {
               <p className="text-sm font-semibold text-foreground">{document.documentTitle}</p>
             </div>
             <div className="space-y-1">
-              <p className="text-xs text-muted-foreground font-medium">Status</p>
+              <p className="text-xs text-muted-foreground font-medium">Document Status</p>
               <Badge variant="secondary" className="text-xs">
                 {document.status === "draft" ? "Draft" : "Completed"}
               </Badge>
             </div>
-            <div className="space-y-1">
-              <p className="text-xs text-muted-foreground font-medium">Total Amount</p>
-              <p className="text-sm font-bold text-primary">
-                ${calculateTotal().toFixed(2)}
-              </p>
-            </div>
+            {inventory && (
+              <div className="space-y-1">
+                <p className="text-xs text-muted-foreground font-medium">Inventory Status</p>
+                <Badge 
+                  variant="secondary" 
+                  className={`${getStatusColor(inventory.status)} text-xs`}
+                >
+                  {inventory.status === "draft" ? "Draft" : "Finalized"}
+                </Badge>
+              </div>
+            )}
           </div>
         </CardContent>
       </Card>
 
-      {/* Inventory Items Table */}
-      <InventoryDataTable 
-        items={inventoryItems} 
-        isLoading={isLoadingItems}
-        documentId={documentId}
-      />
+      {/* Inventory Summary & Items */}
+      {inventory ? (
+        <>
+          {/* Financial Summary Card */}
+          <Card className="border-primary/10">
+            <CardContent className="p-6">
+              <h3 className="text-lg font-semibold mb-4 flex items-center gap-2">
+                <Package className="w-5 h-5 text-primary" />
+                Financial Summary
+              </h3>
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-4">
+                <div className="space-y-1">
+                  <p className="text-xs text-muted-foreground font-medium">Subtotal</p>
+                  <p className="text-lg font-bold text-foreground">
+                    {inventory.currency} {inventory.subtotal.toFixed(2)}
+                  </p>
+                </div>
+                <div className="space-y-1">
+                  <p className="text-xs text-muted-foreground font-medium">Discount</p>
+                  <p className="text-lg font-bold text-orange-600">
+                    -{inventory.currency} {inventory.discount.toFixed(2)}
+                  </p>
+                </div>
+                <div className="space-y-1">
+                  <p className="text-xs text-muted-foreground font-medium">Tax</p>
+                  <p className="text-lg font-bold text-blue-600">
+                    +{inventory.currency} {inventory.tax.toFixed(2)}
+                  </p>
+                </div>
+                <div className="space-y-1 md:col-span-2">
+                  <p className="text-xs text-muted-foreground font-medium">Final Total</p>
+                  <p className="text-2xl font-bold text-primary">
+                    {inventory.currency} {inventory.finalTotal.toFixed(2)}
+                  </p>
+                </div>
+              </div>
 
-      {/* Create Item Modal */}
+              {/* Payment Information */}
+              {(inventory.paymentOption || inventory.paymentInfo) && (
+                <div className="mt-4 pt-4 border-t">
+                  <h4 className="text-sm font-semibold mb-2 text-muted-foreground">Payment Details</h4>
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    {inventory.paymentOption && (
+                      <div className="space-y-1">
+                        <p className="text-xs text-muted-foreground font-medium">Payment Option</p>
+                        <p className="text-sm font-semibold text-foreground">{inventory.paymentOption}</p>
+                      </div>
+                    )}
+                    {inventory.paymentInfo && (
+                      <div className="space-y-1">
+                        <p className="text-xs text-muted-foreground font-medium">Payment Info</p>
+                        <p className="text-sm font-semibold text-foreground">{inventory.paymentInfo}</p>
+                      </div>
+                    )}
+                  </div>
+                </div>
+              )}
+            </CardContent>
+          </Card>
+
+          {/* Inventory Items Table */}
+          <InventoryDataTable 
+            items={inventory.items} 
+            isLoading={isLoadingInventory}
+          />
+        </>
+      ) : (
+        <Card className="border-dashed">
+          <CardContent className="flex flex-col items-center justify-center py-12">
+            <Package className="w-12 h-12 text-muted-foreground mb-4" />
+            <h3 className="text-lg font-semibold mb-2">No inventory created yet</h3>
+            <p className="text-muted-foreground text-sm mb-4">
+              Create an inventory to add items and manage pricing for this document
+            </p>
+            <Button onClick={() => setModalOpen(true)} className="gap-2">
+              <Plus className="w-4 h-4" />
+              Create Inventory
+            </Button>
+          </CardContent>
+        </Card>
+      )}
+
+      {/* Create/Edit Inventory Modal */}
       <CreateInventoryItemModal
-        open={createModalOpen}
-        onClose={() => setCreateModalOpen(false)}
+        open={modalOpen}
+        onClose={() => setModalOpen(false)}
         documentId={documentId}
+        inventoryToEdit={inventory || null}
       />
     </div>
   );

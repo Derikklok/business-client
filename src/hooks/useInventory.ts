@@ -1,11 +1,11 @@
 import { inventoryService } from "@/components/api/inventory.service";
 import type {
-  UpdateInventoryItemRequest,
+  UpdateInventoryRequest,
 } from "@/types/inventory.types";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 
-// Get all items for a document
-export const useInventoryItems = (documentId: string) => {
+// Get inventory for a document
+export const useInventory = (documentId: string) => {
   return useQuery({
     queryKey: ["inventory", documentId],
     queryFn: () => inventoryService.getByDocumentId(documentId),
@@ -13,33 +13,24 @@ export const useInventoryItems = (documentId: string) => {
   });
 };
 
-// Get single item
-export const useInventoryItem = (id: string) => {
-  return useQuery({
-    queryKey: ["inventoryItem", id],
-    queryFn: () => inventoryService.getById(id),
-    enabled: !!id,
-  });
-};
-
-// Create item
-export const useCreateInventoryItem = () => {
+// Create inventory for a document
+export const useCreateInventory = () => {
   const queryClient = useQueryClient();
 
   return useMutation({
     mutationFn: inventoryService.create,
 
-    onSuccess: (newItem) => {
-      // Invalidate the document's inventory list
+    onSuccess: (newInventory) => {
+      // Invalidate the document's inventory
       queryClient.invalidateQueries({
-        queryKey: ["inventory", newItem.documentId],
+        queryKey: ["inventory", newInventory.documentId],
       });
     },
   });
 };
 
-// Update item
-export const useUpdateInventoryItem = () => {
+// Update inventory
+export const useUpdateInventory = () => {
   const queryClient = useQueryClient();
 
   return useMutation({
@@ -48,30 +39,30 @@ export const useUpdateInventoryItem = () => {
       data,
     }: {
       id: string;
-      data: UpdateInventoryItemRequest;
+      data: UpdateInventoryRequest;
     }) => inventoryService.update(id, data),
 
     onSuccess: (updated) => {
-      // Invalidate the document's inventory list
+      // Invalidate the document's inventory
       queryClient.invalidateQueries({
         queryKey: ["inventory", updated.documentId],
       });
 
-      // Update single item cache
-      queryClient.setQueryData(["inventoryItem", updated.id], updated);
+      // Update cache
+      queryClient.setQueryData(["inventory", updated.documentId], updated);
     },
   });
 };
 
-// Delete item
-export const useDeleteInventoryItem = () => {
+// Delete inventory
+export const useDeleteInventory = () => {
   const queryClient = useQueryClient();
 
   return useMutation({
     mutationFn: (id: string) => inventoryService.delete(id),
 
     onSuccess: () => {
-      // Invalidate all inventory queries to refresh the list
+      // Invalidate all inventory queries to refresh
       queryClient.invalidateQueries({
         queryKey: ["inventory"],
       });

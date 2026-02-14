@@ -1,39 +1,33 @@
 import api from "@/lib/axios";
 import type {
-  CreateInventoryItemRequest,
-  InventoryItem,
-  UpdateInventoryItemRequest,
+  CreateInventoryRequest,
+  InventoryResponse,
+  UpdateInventoryRequest,
 } from "@/types/inventory.types";
 
 export const inventoryService = {
-  // Get all items for a document
-  getByDocumentId: async (documentId: string): Promise<InventoryItem[]> => {
-    const res = await api.get<InventoryItem[]>(`/api/inventory/document/${documentId}`);
+  // Get inventory for a document
+  getByDocumentId: async (documentId: string): Promise<InventoryResponse> => {
+    const res = await api.get<InventoryResponse>(`/api/inventory/document/${documentId}`);
     return res.data;
   },
 
-  // Get single item
-  getById: async (id: string): Promise<InventoryItem> => {
-    const res = await api.get<InventoryItem>(`/api/inventory/${id}`);
+  // Create inventory for a document
+  create: async (data: CreateInventoryRequest): Promise<InventoryResponse> => {
+    const res = await api.post<InventoryResponse>("/api/inventory", data);
     return res.data;
   },
 
-  // Create item
-  create: async (data: CreateInventoryItemRequest): Promise<InventoryItem> => {
-    const res = await api.post<InventoryItem>("/api/inventory", data);
-    return res.data;
-  },
-
-  // Update item
+  // Update inventory
   update: async (
     id: string,
-    data: UpdateInventoryItemRequest
-  ): Promise<InventoryItem> => {
-    const res = await api.put<InventoryItem>(`/api/inventory/${id}`, data);
+    data: UpdateInventoryRequest
+  ): Promise<InventoryResponse> => {
+    const res = await api.put<InventoryResponse>(`/api/inventory/${id}`, data);
     return res.data;
   },
 
-  // Delete item
+  // Delete inventory
   delete: async (id: string): Promise<{ message: string }> => {
     const res = await api.delete<{ message: string }>(`/api/inventory/${id}`);
     return res.data;
