@@ -8,6 +8,7 @@ import Customertab from "./components/dashboard/Customer-tab";
 import Documentstab from "./components/dashboard/Docs-tab";
 import ProfileTab from "./components/dashboard/Profile-tab";
 import Inventory from "./pages/Inventory";
+import PdfDashboard from "./pages/PDF-Dashboard";
 
 const App = () => {
   return (
@@ -30,6 +31,7 @@ const App = () => {
         <Route path="documents" element={<Documentstab />} />
         <Route path="profile" element={<ProfileTab />} />
         <Route path="inventory" element={<Inventory />} />
+        <Route path="pdf" element={<PdfDashboard />} />
       </Route>
 
       {/* 404 Not Found */}

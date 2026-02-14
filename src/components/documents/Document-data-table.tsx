@@ -64,6 +64,10 @@ const DocumentDataTable = ({ documents, isLoading }: DocumentDataTableProps) => 
   const handleGoToInventory = (documentId: string) => {
     navigate(`/dashboard/inventory?documentId=${documentId}`);
   };
+
+  const handleGoToPdf = (documentId: string) => {
+    navigate(`/dashboard/pdf?documentId=${documentId}`);
+  };
   const formatDate = (dateString: string) => {
     return new Date(dateString).toLocaleDateString('en-US', {
       year: 'numeric',
@@ -245,6 +249,23 @@ const DocumentDataTable = ({ documents, isLoading }: DocumentDataTableProps) => 
                           </TooltipTrigger>
                           <TooltipContent>
                             <p>Go to inventory</p>
+                          </TooltipContent>
+                        </Tooltip>
+                      </TooltipProvider>
+                      <TooltipProvider>
+                        <Tooltip>
+                          <TooltipTrigger asChild>
+                            <Button 
+                              variant="ghost" 
+                              size="sm" 
+                              className="h-8 w-8 p-0"
+                              onClick={() => handleGoToPdf(doc.id)}
+                            >
+                              <FileText className="h-4 w-4" />
+                            </Button>
+                          </TooltipTrigger>
+                          <TooltipContent>
+                            <p>Generate PDF</p>
                           </TooltipContent>
                         </Tooltip>
                       </TooltipProvider>
